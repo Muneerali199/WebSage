@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      width: 350px;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 0;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .logo {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    
+    h1 {
+      margin: 0;
+      font-size: 18px;
+      color: #333;
+    }
+    
+    .version {
+      color: #666;
+      font-size: 12px;
+    }
+    
+    .section {
+      margin-bottom: 20px;
+    }
+    
+    .section h3 {
+      margin: 0 0 10px 0;
+      font-size: 14px;
+      color: #333;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #555;
+    }
+    
+    select, input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 13px;
+      box-sizing: border-box;
+    }
+    
+    input[type="password"] {
+      font-family: monospace;
+    }
+    
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .checkbox-group input[type="checkbox"] {
+      width: auto;
+    }
+    
+    .btn {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      width: 100%;
+      margin-top: 10px;
+    }
+    
+    .btn:hover {
+      background: #0056b3;
+    }
+    
+    .btn-secondary {
+      background: #6c757d;
+    }
+    
+    .btn-secondary:hover {
+      background: #545b62;
+    }
+    
+    .status {
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      margin-top: 10px;
+      text-align: center;
+    }
+    
+    .status.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .status.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    
+    .shortcut {
+      background: #f8f9fa;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      color: #666;
+      text-align: center;
+    }
+    
+    .api-key-input {
+      position: relative;
+    }
+    
+    .api-key-toggle {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+      opacity: 0.6;
+    }
+    
+    .api-key-toggle:hover {
+      opacity: 1;
+    }
+    
+    .section:nth-child(6) {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 15px 0;
+    }
+    
+    .section:nth-child(6) h3 {
+      color: white;
+      margin-bottom: 15px;
+    }
+    
+    .section:nth-child(6) label {
+      color: rgba(255, 255, 255, 0.9);
+    }
+    
+    .nlp-feature {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">🧠</div>
+    <h1>WebSage</h1>
+    <div class="version">v2.0.0 - Enhanced with NLP</div>
+  </div>
+
+  <div class="section">
+    <h3>AI Provider</h3>
+    <div class="form-group">
+      <label for="provider">Choose Provider:</label>
+      <select id="provider">
+        <option value="openai">OpenAI</option>
+        <option value="gemini">Google Gemini</option>
+        <option value="mistral">Mistral AI</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label for="model">Model:</label>
+      <select id="model">
+        <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+        <option value="gpt-4">GPT-4</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>API Keys</h3>
+    <div class="form-group">
+      <label for="apiKey">API Key:</label>
+      <div class="api-key-input">
+        <input type="password" id="apiKey" placeholder="Enter your API key">
+        <button type="button" class="api-key-toggle" id="toggleApiKey">👁️</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Settings</h3>
+    <div class="form-group">
+      <div class="checkbox-group">
+        <input type="checkbox" id="contextEnabled">
+        <label for="contextEnabled">Enable intelligent page context</label>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <div class="checkbox-group">
+        <input type="checkbox" id="memoryEnabled" checked>
+        <label for="memoryEnabled">Remember conversations per page</label>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="contextMode">Context Processing:</label>
+      <select id="contextMode">
+        <option value="intelligent">Intelligent (Recommended)</option>
+        <option value="full">Full Page Content</option>
+        <option value="minimal">Minimal Context</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label for="theme">Theme:</label>
+      <select id="theme">
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>NLP Features</h3>
+    <div class="form-group">
+      <div class="checkbox-group">
+        <input type="checkbox" id="nlpEnabled" checked>
+        <label for="nlpEnabled">Enable NLP processing</label>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <div class="checkbox-group">
+        <input type="checkbox" id="sentimentAnalysis" checked>
+        <label for="sentimentAnalysis">Sentiment analysis</label>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <div class="checkbox-group">
+        <input type="checkbox" id="intentClassification" checked>
+        <label for="intentClassification">Intent classification</label>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <div class="checkbox-group">
+        <input type="checkbox" id="conversationInsights" checked>
+        <label for="conversationInsights">Conversation insights</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Performance</h3>
+    <div class="form-group">
+      <label for="maxTokens">Max Context Tokens:</label>
+      <select id="maxTokens">
+        <option value="1000">1000 (Fast)</option>
+        <option value="1500">1500 (Balanced)</option>
+        <option value="2000">2000 (Detailed)</option>
+      </select>
+    </div>
+  </div>
+
+  <button class="btn" id="saveSettings">Save Settings</button>
+  <button class="btn btn-secondary" id="testConnection">Test Connection</button>
+
+  <div class="shortcut">
+    Press <strong>Alt+W</strong> to toggle WebSage on any page
+  </div>
+
+  <div id="status" class="status" style="display: none;"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

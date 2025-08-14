@@ -1,0 +1,395 @@
+/* WebSage Chat Window Styles */
+#websage-chat-window {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 380px;
+  height: 500px;
+  background: #ffffff;
+  border: 1px solid #e1e5e9;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  z-index: 2147483647;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  display: none;
+  flex-direction: column;
+  resize: both;
+  overflow: hidden;
+  min-width: 300px;
+  min-height: 400px;
+}
+
+/* Dark theme */
+#websage-chat-window.dark {
+  background: #1a1a1a;
+  border-color: #333;
+  color: #ffffff;
+}
+
+/* Header */
+.websage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e1e5e9;
+  border-radius: 12px 12px 0 0;
+  cursor: move;
+  user-select: none;
+}
+
+.dark .websage-header {
+  background: #2d2d2d;
+  border-bottom-color: #444;
+}
+
+.websage-title {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.dark .websage-title {
+  color: #ffffff;
+}
+
+.websage-logo {
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+.websage-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.websage-select {
+  padding: 4px 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: white;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.dark .websage-select {
+  background: #333;
+  border-color: #555;
+  color: white;
+}
+
+.websage-btn-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  font-size: 14px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.websage-btn-icon:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.dark .websage-btn-icon:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Messages */
+.websage-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.websage-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.websage-message-user {
+  justify-content: flex-end;
+}
+
+.websage-message-user .websage-message-content {
+  background: #007bff;
+  color: white;
+  border-radius: 18px 18px 4px 18px;
+}
+
+.websage-message-assistant {
+  justify-content: flex-start;
+}
+
+.websage-message-assistant .websage-message-content {
+  background: #f1f3f4;
+  color: #333;
+  border-radius: 18px 18px 18px 4px;
+}
+
+.dark .websage-message-assistant .websage-message-content {
+  background: #333;
+  color: #ffffff;
+}
+
+.websage-message-content {
+  max-width: 80%;
+  padding: 12px 16px;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.websage-copy-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.5;
+  font-size: 12px;
+  padding: 4px;
+  border-radius: 4px;
+  transition: opacity 0.2s;
+}
+
+.websage-copy-btn:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.dark .websage-copy-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Typing indicator */
+.websage-typing-indicator {
+  background: #f1f3f4;
+  color: #666;
+  padding: 12px 16px;
+  border-radius: 18px 18px 18px 4px;
+  font-style: italic;
+  animation: pulse 1.5s infinite;
+}
+
+.dark .websage-typing-indicator {
+  background: #333;
+  color: #ccc;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Input */
+.websage-input-container {
+  display: flex;
+  padding: 16px;
+  gap: 8px;
+  border-top: 1px solid #e1e5e9;
+  align-items: flex-end;
+}
+
+.dark .websage-input-container {
+  border-top-color: #444;
+}
+
+#websage-input {
+  flex: 1;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 10px 16px;
+  resize: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.4;
+  max-height: 120px;
+  transition: border-color 0.2s;
+}
+
+#websage-input:focus {
+  border-color: #007bff;
+}
+
+.dark #websage-input {
+  background: #333;
+  border-color: #555;
+  color: white;
+}
+
+.dark #websage-input:focus {
+  border-color: #007bff;
+}
+
+.websage-btn-send {
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.websage-btn-send:hover {
+  background: #0056b3;
+}
+
+.websage-btn-send:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* Status */
+.websage-status {
+  padding: 8px 16px;
+  font-size: 12px;
+  text-align: center;
+  min-height: 16px;
+  transition: all 0.3s ease;
+}
+
+.websage-status.websage-error {
+  color: #dc3545;
+  background: #f8d7da;
+  border-top: 1px solid #f5c6cb;
+}
+
+.websage-status.websage-success {
+  color: #155724;
+  background: #d4edda;
+  border-top: 1px solid #c3e6cb;
+}
+
+.websage-status.websage-info {
+  color: #0c5460;
+  background: #d1ecf1;
+  border-top: 1px solid #bee5eb;
+}
+
+.dark .websage-status.websage-error {
+  background: #2d1b1b;
+  border-top-color: #5a2a2a;
+}
+
+.dark .websage-status.websage-success {
+  background: #1b2d1b;
+  border-top-color: #2a5a2a;
+}
+
+.dark .websage-status.websage-info {
+  background: #1b2a2d;
+  border-top-color: #2a4a5a;
+}
+
+/* Performance indicator */
+.websage-performance {
+  position: absolute;
+  top: 4px;
+  right: 80px;
+  font-size: 10px;
+  color: #666;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 2px 6px;
+  border-radius: 10px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.websage-header:hover .websage-performance {
+  opacity: 1;
+}
+
+.dark .websage-performance {
+  background: rgba(0, 0, 0, 0.8);
+  color: #ccc;
+}
+
+/* Enhanced message styling */
+.websage-message-content strong {
+  font-weight: 600;
+}
+
+.websage-message-content em {
+  font-style: italic;
+  opacity: 0.9;
+}
+
+/* Loading animation for better UX */
+.websage-loading {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Scrollbar styling */
+.websage-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.websage-messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.websage-messages::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+.websage-messages::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+.dark .websage-messages::-webkit-scrollbar-thumb {
+  background: #555;
+}
+
+.dark .websage-messages::-webkit-scrollbar-thumb:hover {
+  background: #777;
+}
+
+/* Code formatting */
+code {
+  background: rgba(0, 0, 0, 0.1);
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 13px;
+}
+
+.dark code {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  #websage-chat-window {
+    width: calc(100vw - 20px);
+    height: calc(100vh - 40px);
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    resize: none;
+  }
+}

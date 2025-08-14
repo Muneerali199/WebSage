@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "WebSage - AI Browser Assistant",
+  "version": "2.0.0",
+  "description": "Advanced AI-powered assistant with NLP, sentiment analysis, conversation intelligence, and multi-modal capabilities for enhanced web browsing.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "contextMenus"
+  ],
+  "host_permissions": [
+    "https://*/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*/*", "http://*/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_end"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "WebSage Settings"
+  },
+  "commands": {
+    "toggle-websage": {
+      "suggested_key": {
+        "default": "Alt+W"
+      },
+      "description": "Toggle WebSage chat window"
+    }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["styles.css", "nlp-processor.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
