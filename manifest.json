@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "WebSage - AI Browser Assistant",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Advanced AI-powered assistant with NLP, sentiment analysis, conversation intelligence, and multi-modal capabilities for enhanced web browsing.",
   "permissions": [
     "storage",
@@ -17,9 +17,16 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://*/*", "http://*/*"],
-      "js": ["content.js"],
-      "css": ["styles.css"],
+      "matches": [
+        "https://*/*",
+        "http://*/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "styles.css"
+      ],
       "run_at": "document_end"
     }
   ],
@@ -37,8 +44,13 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["styles.css", "nlp-processor.js"],
-      "matches": ["<all_urls>"]
+      "resources": [
+        "styles.css",
+        "nlp-simple.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
     }
   ]
 }

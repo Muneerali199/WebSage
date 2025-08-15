@@ -1,6 +1,20 @@
-# Contributing to WebSage
+<div align="center">
 
-Thank you for your interest in contributing to WebSage! We welcome contributions from the community and are excited to see what you'll bring to this project.
+# 🤝 Contributing to WebSage
+
+### *Join our mission to revolutionize AI-powered browsing*
+
+[![Contributors](https://img.shields.io/badge/contributors-welcome-brightgreen.svg)](https://github.com/Xenonesis/WebSage/graphs/contributors)
+[![Good First Issues](https://img.shields.io/badge/good%20first%20issues-available-blue.svg)](https://github.com/Xenonesis/WebSage/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+[![Code of Conduct](https://img.shields.io/badge/code%20of%20conduct-enforced-red.svg)](CODE_OF_CONDUCT.md)
+
+*Thank you for your interest in contributing to WebSage! We welcome contributions from developers of all skill levels and are excited to see what you'll bring to this project.*
+
+[🚀 Quick Start](#-development-setup) • [🐛 Report Issues](#-reporting-issues) • [💻 Code Guidelines](#-coding-standards) • [🎯 Priority Areas](#-areas-for-contribution)
+
+</div>
+
+---
 
 ## 🤝 How to Contribute
 

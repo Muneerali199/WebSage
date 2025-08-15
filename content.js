@@ -6,6 +6,309 @@ if (window.webSageLoaded) {
 } else {
   window.webSageLoaded = true;
 
+  // Embed NLP Processor directly to avoid loading issues
+  console.log('🔄 Defining AdvancedNLPProcessor inline...');
+  
+  class AdvancedNLPProcessor {
+    constructor() {
+      console.log('✨ AdvancedNLPProcessor constructor called');
+      this.fakeNewsCache = new Map();
+    }
+
+    detectFakeNews(text) {
+      console.log('🔍 Analyzing text for fake news:', text.substring(0, 50) + '...');
+      
+      const lowerText = text.toLowerCase();
+      let suspicionScore = 0;
+      const indicators = [];
+
+      // Sensational words
+      const sensationalWords = [
+        'shocking', 'unbelievable', 'incredible', 'amazing', 'stunning', 'outrageous',
+        'explosive', 'bombshell', 'devastating', 'mind-blowing', 'jaw-dropping'
+      ];
+      
+      const sensationalCount = sensationalWords.filter(word => lowerText.includes(word)).length;
+      if (sensationalCount > 0) {
+        suspicionScore += sensationalCount * 3;
+        indicators.push(`Contains ${sensationalCount} sensational words`);
+      }
+
+      // Clickbait phrases
+      const clickbaitPhrases = [
+        'you won\'t believe', 'what happens next', 'doctors hate', 'this one trick',
+        'the results will surprise you', 'don\'t want you to know'
+      ];
+      
+      const clickbaitCount = clickbaitPhrases.filter(phrase => lowerText.includes(phrase)).length;
+      if (clickbaitCount > 0) {
+        suspicionScore += clickbaitCount * 5;
+        indicators.push(`Contains ${clickbaitCount} clickbait phrases`);
+      }
+
+      // ALL CAPS check
+      const allCaps = (text.match(/[A-Z]{3,}/g) || []).length;
+      if (allCaps > 2) {
+        suspicionScore += allCaps;
+        indicators.push(`Excessive use of ALL CAPS (${allCaps})`);
+      }
+
+      // Calculate risk level
+      let riskLevel = 'low';
+      let confidence = 0.6;
+
+      if (suspicionScore >= 10) {
+        riskLevel = 'high';
+        confidence = 0.85;
+      } else if (suspicionScore >= 5) {
+        riskLevel = 'medium';
+        confidence = 0.75;
+      } else if (suspicionScore >= 2) {
+        riskLevel = 'low-medium';
+        confidence = 0.65;
+      }
+
+      const result = {
+        riskLevel,
+        suspicionScore,
+        confidence,
+        indicators,
+        recommendation: this.getFakeNewsRecommendation(riskLevel)
+      };
+
+      console.log('📊 Fake news analysis result:', result);
+      return result;
+    }
+
+    getFakeNewsRecommendation(riskLevel) {
+      switch (riskLevel) {
+        case 'high':
+          return 'High risk of misinformation. Verify with multiple credible sources before sharing.';
+        case 'medium':
+          return 'Moderate risk. Cross-check facts with reliable news sources.';
+        case 'low-medium':
+          return 'Some concerning patterns detected. Consider fact-checking key claims.';
+        default:
+          return 'Content appears relatively reliable, but always verify important information.';
+      }
+    }
+
+    detectBias(text) {
+      console.log('⚖️ Analyzing text for bias:', text.substring(0, 50) + '...');
+      
+      const lowerText = text.toLowerCase();
+      let biasScore = 0;
+      const detectedBias = [];
+
+      // Emotional words
+      const emotionalWords = ['outrageous', 'disgusting', 'shocking', 'unbelievable', 'terrifying', 'amazing'];
+      const emotionalCount = emotionalWords.filter(word => lowerText.includes(word)).length;
+      if (emotionalCount > 1) {
+        detectedBias.push('emotional');
+        biasScore += emotionalCount * 2;
+      }
+
+      // Absolute statements
+      const absoluteWords = ['all', 'every', 'always', 'never', 'everyone', 'no one', 'completely'];
+      const absoluteCount = absoluteWords.filter(word => lowerText.includes(word)).length;
+      if (absoluteCount > 2) {
+        detectedBias.push('overgeneralizing');
+        biasScore += absoluteCount;
+      }
+
+      const result = {
+        biasTypes: detectedBias,
+        biasScore,
+        severity: biasScore > 6 ? 'high' : biasScore > 3 ? 'medium' : 'low',
+        confidence: Math.min(0.9, 0.5 + biasScore * 0.05)
+      };
+
+      console.log('⚖️ Bias analysis result:', result);
+      return result;
+    }
+
+    // Add missing methods that the content script expects
+    updateConversationContext(userMessage, aiResponse) {
+      // Simple implementation - just return basic analysis
+      return {
+        sentiment: this.analyzeSentiment(userMessage),
+        intent: this.classifyIntent(userMessage),
+        entities: { persons: [], organizations: [], locations: [] },
+        topics: []
+      };
+    }
+
+    analyzeSentiment(text) {
+      const positiveWords = ['good', 'great', 'excellent', 'amazing', 'love', 'like', 'happy', 'pleased'];
+      const negativeWords = ['bad', 'terrible', 'awful', 'hate', 'dislike', 'angry', 'upset', 'sad'];
+      
+      const lowerText = text.toLowerCase();
+      const positiveCount = positiveWords.filter(word => lowerText.includes(word)).length;
+      const negativeCount = negativeWords.filter(word => lowerText.includes(word)).length;
+      
+      let sentiment = 'neutral';
+      let confidence = 0.5;
+      
+      if (positiveCount > negativeCount) {
+        sentiment = 'positive';
+        confidence = Math.min(0.9, 0.5 + (positiveCount - negativeCount) * 0.1);
+      } else if (negativeCount > positiveCount) {
+        sentiment = 'negative';
+        confidence = Math.min(0.9, 0.5 + (negativeCount - positiveCount) * 0.1);
+      }
+      
+      return { sentiment, confidence };
+    }
+
+    classifyIntent(text) {
+      const lowerText = text.toLowerCase();
+      
+      if (lowerText.includes('?') || lowerText.includes('what') || lowerText.includes('how') || lowerText.includes('why')) {
+        return { intent: 'question', confidence: 0.8 };
+      } else if (lowerText.includes('please') || lowerText.includes('can you') || lowerText.includes('help')) {
+        return { intent: 'request', confidence: 0.7 };
+      } else {
+        return { intent: 'general', confidence: 0.5 };
+      }
+    }
+
+    generateContextualPrompt(userMessage, pageContext) {
+      // Simple implementation - just return the original message
+      return userMessage;
+    }
+
+    extractKeywords(text, maxKeywords = 10) {
+      const words = text.toLowerCase().split(/\W+/).filter(word => word.length > 3);
+      const wordFreq = {};
+      words.forEach(word => {
+        wordFreq[word] = (wordFreq[word] || 0) + 1;
+      });
+      
+      return Object.entries(wordFreq)
+        .sort(([,a], [,b]) => b - a)
+        .slice(0, maxKeywords)
+        .map(([word, frequency]) => ({ word, frequency }));
+    }
+
+    summarizeText(text, maxSentences = 3) {
+      const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 20);
+      return sentences.slice(0, maxSentences).join('. ') + '.';
+    }
+
+    extractTopics(text) {
+      // Simple topic extraction based on keywords
+      const topicKeywords = {
+        technology: ['code', 'programming', 'software', 'tech', 'computer'],
+        business: ['company', 'business', 'market', 'sales', 'revenue'],
+        health: ['health', 'medical', 'doctor', 'treatment', 'medicine']
+      };
+      
+      const lowerText = text.toLowerCase();
+      const topics = [];
+      
+      Object.entries(topicKeywords).forEach(([topic, keywords]) => {
+        const count = keywords.filter(keyword => lowerText.includes(keyword)).length;
+        if (count > 0) {
+          topics.push({ topic, score: count });
+        }
+      });
+      
+      return topics.sort((a, b) => b.score - a.score);
+    }
+
+    // Comprehensive content analysis method
+    analyzeContent(text) {
+      return {
+        sentiment: this.analyzeSentiment(text),
+        entities: { persons: [], organizations: [], locations: [], dates: [], urls: [], emails: [], numbers: [], technologies: [] },
+        topics: this.extractTopics(text),
+        fakeNews: this.detectFakeNews(text),
+        bias: this.detectBias(text),
+        readability: this.analyzeReadability(text),
+        quality: this.assessContentQuality(text),
+        keywords: this.extractKeywords(text, 5),
+        summary: this.summarizeText(text, 2)
+      };
+    }
+
+    // Simple readability analysis
+    analyzeReadability(text) {
+      const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+      const words = text.split(/\s+/).filter(w => w.length > 0);
+      
+      const avgWordsPerSentence = words.length / sentences.length || 0;
+      
+      let readingLevel = 'Standard';
+      if (avgWordsPerSentence > 20) readingLevel = 'Difficult';
+      else if (avgWordsPerSentence > 15) readingLevel = 'Fairly Difficult';
+      else if (avgWordsPerSentence < 10) readingLevel = 'Easy';
+      
+      return {
+        fleschScore: 60, // Simplified score
+        readingLevel,
+        avgWordsPerSentence: Math.round(avgWordsPerSentence * 10) / 10,
+        totalWords: words.length,
+        totalSentences: sentences.length
+      };
+    }
+
+    // Simple content quality assessment
+    assessContentQuality(text) {
+      const fakeNewsAnalysis = this.detectFakeNews(text);
+      const biasAnalysis = this.detectBias(text);
+      
+      let qualityScore = 100;
+      qualityScore -= fakeNewsAnalysis.suspicionScore * 2;
+      qualityScore -= biasAnalysis.biasScore * 1.5;
+      qualityScore = Math.max(0, Math.min(100, qualityScore));
+      
+      let qualityLevel = '';
+      if (qualityScore >= 80) qualityLevel = 'High';
+      else if (qualityScore >= 60) qualityLevel = 'Good';
+      else if (qualityScore >= 40) qualityLevel = 'Fair';
+      else qualityLevel = 'Poor';
+      
+      return {
+        overallScore: Math.round(qualityScore),
+        qualityLevel,
+        fakeNewsRisk: fakeNewsAnalysis.riskLevel,
+        biasLevel: biasAnalysis.severity,
+        readabilityLevel: 'Standard',
+        recommendations: this.generateQualityRecommendations(fakeNewsAnalysis, biasAnalysis)
+      };
+    }
+
+    generateQualityRecommendations(fakeNews, bias) {
+      const recommendations = [];
+      
+      if (fakeNews.riskLevel === 'high' || fakeNews.riskLevel === 'medium') {
+        recommendations.push('⚠️ Verify claims with credible sources');
+      }
+      
+      if (bias.severity === 'high') {
+        recommendations.push('🎯 Consider multiple perspectives on this topic');
+      }
+      
+      if (recommendations.length === 0) {
+        recommendations.push('✅ Content appears to meet quality standards');
+      }
+      
+      return recommendations;
+    }
+  }
+
+  // Make it globally available
+  window.AdvancedNLPProcessor = AdvancedNLPProcessor;
+  console.log('🧠 AdvancedNLPProcessor embedded and available globally');
+  
+  // Test it immediately
+  try {
+    const testInstance = new AdvancedNLPProcessor();
+    console.log('✅ Test instance created successfully');
+  } catch (error) {
+    console.error('❌ Failed to create test instance:', error);
+  }
+
   // Intelligent Context Processor for optimized page analysis
   class IntelligentContextProcessor {
     constructor() {
@@ -232,13 +535,8 @@ if (window.webSageLoaded) {
         contentHash: ''
       };
       this.intelligentContext = new IntelligentContextProcessor();
-      // Initialize NLP processor if available
-      try {
-        this.nlpProcessor = window.AdvancedNLPProcessor ? new window.AdvancedNLPProcessor() : null;
-      } catch (error) {
-        console.warn('Failed to initialize NLP processor:', error);
-        this.nlpProcessor = null;
-      }
+      // Initialize NLP processor - should be available since it's loaded as content script
+      this.nlpProcessor = null;
       this.conversationInsights = {
         userPreferences: {},
         commonQuestions: [],
@@ -259,28 +557,63 @@ if (window.webSageLoaded) {
       await this.loadConversationMemory();
       this.createChatWindow();
       this.setupGlobalToggle();
+      this.initializeNLPProcessor();
+    }
+
+    // Initialize NLP processor - should be available immediately since it's loaded as content script
+    initializeNLPProcessor() {
+      try {
+        console.log('🔍 Initializing embedded NLP processor...');
+        
+        if (window.AdvancedNLPProcessor) {
+          this.nlpProcessor = new window.AdvancedNLPProcessor();
+          console.log('✅ Embedded NLP processor initialized successfully');
+        } else {
+          console.error('❌ Embedded AdvancedNLPProcessor not found - this should not happen!');
+        }
+      } catch (error) {
+        console.error('❌ Failed to initialize embedded NLP processor:', error);
+        this.nlpProcessor = null;
+      }
     }
 
     async loadSettings() {
       return new Promise((resolve) => {
-        chrome.storage.local.get(['webSageSettings'], (result) => {
-          this.settings = result.webSageSettings || {
-            provider: 'openai',
-            model: 'gpt-4o',
-            contextEnabled: true,
-            memoryEnabled: true,
-            contextMode: 'intelligent',
-            maxTokens: 1500,
-            theme: 'light',
-            nlpEnabled: true,
-            sentimentAnalysis: true,
-            intentClassification: true,
-            conversationInsights: true,
-            apiKeys: {}
-          };
+        try {
+          chrome.storage.local.get(['webSageSettings'], (result) => {
+            if (chrome.runtime.lastError) {
+              console.warn('Chrome storage error:', chrome.runtime.lastError);
+              this.settings = this.getDefaultSettings();
+              resolve();
+              return;
+            }
+            
+            this.settings = result.webSageSettings || this.getDefaultSettings();
+            resolve();
+          });
+        } catch (error) {
+          console.warn('Extension context invalidated, using default settings:', error);
+          this.settings = this.getDefaultSettings();
           resolve();
-        });
+        }
       });
+    }
+
+    getDefaultSettings() {
+      return {
+        provider: 'openai',
+        model: 'gpt-4o',
+        contextEnabled: true,
+        memoryEnabled: true,
+        contextMode: 'intelligent',
+        maxTokens: 1500,
+        theme: 'light',
+        nlpEnabled: true,
+        sentimentAnalysis: true,
+        intentClassification: true,
+        conversationInsights: true,
+        apiKeys: {}
+      };
     }
 
     setupGlobalToggle() {
@@ -295,11 +628,50 @@ if (window.webSageLoaded) {
         this.handleContextMenuAction(action, text);
       };
 
+      // Setup page analysis handler
+      window.webSageAnalyzePage = () => {
+        this.analyzeCurrentPage();
+      };
+
       console.log('WebSage toggle and context menu functions set up');
     }
 
     async handleContextMenuAction(action, text) {
-      // Ensure chat window is visible
+      // Handle special actions that don't require chat
+      if (action === 'analyze-page') {
+        this.show();
+        await new Promise(resolve => setTimeout(resolve, 100));
+        this.analyzeCurrentPage();
+        return;
+      }
+
+      if (action === 'check-credibility') {
+        this.show();
+        await new Promise(resolve => setTimeout(resolve, 100));
+        this.checkPageCredibility();
+        return;
+      }
+
+      // Handle text-based analysis actions
+      if (action === 'check-fake-news' || action === 'detect-bias') {
+        console.log('🔍 Fake news/bias detection requested');
+        console.log('NLP Processor available:', !!this.nlpProcessor);
+        console.log('Selected text:', text?.substring(0, 100) + '...');
+
+        this.show();
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        if (!this.nlpProcessor) {
+          console.error('❌ NLP processor not available');
+          this.showError('NLP processor not loaded. Please refresh the page and try again.');
+          return;
+        }
+
+        this.performTextAnalysisInChat(action, text);
+        return;
+      }
+
+      // Ensure chat window is visible for regular actions
       if (!this.isVisible) {
         this.show();
       }
@@ -337,6 +709,375 @@ if (window.webSageLoaded) {
       }
     }
 
+    // Perform text analysis and display results in chat
+    async performTextAnalysisInChat(action, text) {
+      if (!this.nlpProcessor || !text) {
+        this.showError('NLP processor not available or no text selected.');
+        return;
+      }
+
+      try {
+        let analysis;
+        let userMessage;
+        let assistantMessage;
+
+        if (action === 'check-fake-news') {
+          analysis = this.nlpProcessor.detectFakeNews(text);
+          userMessage = `Check this text for fake news: "${text.substring(0, 100)}${text.length > 100 ? '...' : ''}"`;
+          assistantMessage = this.formatFakeNewsForChat(analysis, text);
+        } else if (action === 'detect-bias') {
+          analysis = this.nlpProcessor.detectBias(text);
+          userMessage = `Analyze this text for bias: "${text.substring(0, 100)}${text.length > 100 ? '...' : ''}"`;
+          assistantMessage = this.formatBiasForChat(analysis, text);
+        }
+
+        // Add messages to chat
+        this.addMessage('user', userMessage);
+        this.addMessage('assistant', assistantMessage);
+
+      } catch (error) {
+        console.error('Text analysis error:', error);
+        this.showError('Analysis failed. Please try again.');
+      }
+    }
+
+    formatFakeNewsForChat(analysis, text) {
+      const riskEmoji = analysis.riskLevel === 'high' ? '🚨' : 
+                       analysis.riskLevel === 'medium' ? '⚠️' : 
+                       analysis.riskLevel === 'low-medium' ? '⚡' : '✅';
+      
+      let message = `${riskEmoji} **Fake News Analysis Results**\n\n`;
+      message += `**Risk Level:** ${analysis.riskLevel.toUpperCase()}\n`;
+      message += `**Suspicion Score:** ${analysis.suspicionScore}/20\n`;
+      message += `**Confidence:** ${Math.round(analysis.confidence * 100)}%\n\n`;
+      
+      message += `**💡 Recommendation:**\n${analysis.recommendation}\n\n`;
+      
+      if (analysis.indicators.length > 0) {
+        message += `**⚠️ Issues Detected:**\n`;
+        analysis.indicators.forEach(indicator => {
+          message += `• ${indicator}\n`;
+        });
+      } else {
+        message += `**✅ No major issues detected**\n`;
+      }
+      
+      return message;
+    }
+
+    formatBiasForChat(analysis, text) {
+      const biasEmoji = analysis.severity === 'high' ? '🔴' : 
+                       analysis.severity === 'medium' ? '🟡' : '🟢';
+      
+      let message = `${biasEmoji} **Bias Detection Results**\n\n`;
+      message += `**Bias Severity:** ${analysis.severity.toUpperCase()}\n`;
+      message += `**Bias Score:** ${analysis.biasScore}\n`;
+      message += `**Confidence:** ${Math.round(analysis.confidence * 100)}%\n\n`;
+      
+      if (analysis.biasTypes.length > 0) {
+        message += `**🎯 Detected Bias Types:**\n`;
+        analysis.biasTypes.forEach(type => {
+          message += `• ${type.replace('-', ' ')}\n`;
+        });
+      } else {
+        message += `**✅ No significant bias detected**\nThe text appears to be relatively neutral and balanced.\n`;
+      }
+      
+      return message;
+    }
+
+    // Perform text analysis for fake news and bias detection
+    async performTextAnalysis(action, text) {
+      if (!this.nlpProcessor || !text) {
+        this.showError('NLP processor not available or no text selected.');
+        return;
+      }
+
+      const analysisPanel = this.chatWindow.querySelector('#websage-analysis');
+      analysisPanel.style.display = 'block';
+
+      try {
+        let analysis;
+        let title;
+        let content;
+
+        if (action === 'check-fake-news') {
+          analysis = this.nlpProcessor.detectFakeNews(text);
+          title = '🛡️ Fake News Detection Results';
+          content = this.formatFakeNewsResults(analysis, text);
+        } else if (action === 'detect-bias') {
+          analysis = this.nlpProcessor.detectBias(text);
+          title = '⚖️ Bias Detection Results';
+          content = this.formatBiasResults(analysis, text);
+        }
+
+        analysisPanel.innerHTML = `
+          <div class="websage-analysis-results">
+            <div class="websage-analysis-header">
+              <h3>${title}</h3>
+              <button class="websage-analysis-close" onclick="this.parentElement.parentElement.parentElement.style.display='none'">✕</button>
+            </div>
+            ${content}
+          </div>
+        `;
+
+      } catch (error) {
+        console.error('Text analysis error:', error);
+        analysisPanel.innerHTML = '<div class="websage-analysis-error">❌ Analysis failed. Please try again.</div>';
+      }
+    }
+
+    formatFakeNewsResults(analysis, text) {
+      const riskColor = this.getRiskColor(analysis.riskLevel);
+
+      return `
+        <div class="websage-analysis-section">
+          <div class="websage-selected-text">
+            <strong>Analyzed Text:</strong>
+            <div class="websage-text-preview">"${text.substring(0, 200)}${text.length > 200 ? '...' : ''}"</div>
+          </div>
+        </div>
+
+        <div class="websage-analysis-grid">
+          <div class="websage-analysis-card">
+            <div class="websage-analysis-title">Risk Level</div>
+            <div class="websage-analysis-score" style="color: ${riskColor}">
+              ${analysis.riskLevel.toUpperCase()}
+            </div>
+            <div class="websage-analysis-detail">
+              Suspicion Score: ${analysis.suspicionScore}/20
+            </div>
+          </div>
+
+          <div class="websage-analysis-card">
+            <div class="websage-analysis-title">Confidence</div>
+            <div class="websage-analysis-score">
+              ${Math.round(analysis.confidence * 100)}%
+            </div>
+          </div>
+        </div>
+
+        <div class="websage-analysis-section">
+          <div class="websage-analysis-subtitle">💡 Recommendation</div>
+          <div class="websage-analysis-recommendation">
+            ${analysis.recommendation}
+          </div>
+        </div>
+
+        ${analysis.indicators.length > 0 ? `
+        <div class="websage-analysis-section">
+          <div class="websage-analysis-subtitle">⚠️ Detected Issues</div>
+          <ul class="websage-analysis-issues">
+            ${analysis.indicators.map(indicator => `<li>${indicator}</li>`).join('')}
+          </ul>
+        </div>
+        ` : ''}
+      `;
+    }
+
+    formatBiasResults(analysis, text) {
+      const biasColor = this.getSeverityColor(analysis.severity);
+
+      return `
+        <div class="websage-analysis-section">
+          <div class="websage-selected-text">
+            <strong>Analyzed Text:</strong>
+            <div class="websage-text-preview">"${text.substring(0, 200)}${text.length > 200 ? '...' : ''}"</div>
+          </div>
+        </div>
+
+        <div class="websage-analysis-grid">
+          <div class="websage-analysis-card">
+            <div class="websage-analysis-title">Bias Severity</div>
+            <div class="websage-analysis-score" style="color: ${biasColor}">
+              ${analysis.severity.toUpperCase()}
+            </div>
+            <div class="websage-analysis-detail">
+              Score: ${analysis.biasScore}
+            </div>
+          </div>
+
+          <div class="websage-analysis-card">
+            <div class="websage-analysis-title">Confidence</div>
+            <div class="websage-analysis-score">
+              ${Math.round(analysis.confidence * 100)}%
+            </div>
+          </div>
+        </div>
+
+        ${analysis.biasTypes.length > 0 ? `
+        <div class="websage-analysis-section">
+          <div class="websage-analysis-subtitle">🎯 Detected Bias Types</div>
+          <div class="websage-analysis-tags">
+            ${analysis.biasTypes.map(type =>
+        `<span class="websage-analysis-tag">${type.replace('-', ' ')}</span>`
+      ).join('')}
+          </div>
+        </div>
+        ` : `
+        <div class="websage-analysis-section">
+          <div class="websage-analysis-subtitle">✅ No Significant Bias Detected</div>
+          <p>The text appears to be relatively neutral and balanced.</p>
+        </div>
+        `}
+      `;
+    }
+
+    // Check page credibility using comprehensive analysis
+    async checkPageCredibility() {
+      if (!this.nlpProcessor) {
+        this.showError('NLP processor not available. Please refresh the page.');
+        return;
+      }
+
+      const analysisPanel = this.chatWindow.querySelector('#websage-analysis');
+      analysisPanel.style.display = 'block';
+      analysisPanel.innerHTML = '<div class="websage-analysis-loading">🏆 Checking page credibility...</div>';
+
+      try {
+        const pageText = document.body.innerText || document.body.textContent || '';
+
+        if (pageText.length < 100) {
+          analysisPanel.innerHTML = '<div class="websage-analysis-error">⚠️ Not enough content to analyze credibility</div>';
+          return;
+        }
+
+        // Perform comprehensive credibility analysis
+        const fakeNewsAnalysis = this.nlpProcessor.detectFakeNews(pageText);
+        const biasAnalysis = this.nlpProcessor.detectBias(pageText);
+        const qualityAnalysis = this.nlpProcessor.assessContentQuality(pageText);
+        const readabilityAnalysis = this.nlpProcessor.analyzeReadability(pageText);
+
+        // Calculate overall credibility score
+        let credibilityScore = 100;
+        credibilityScore -= fakeNewsAnalysis.suspicionScore * 3;
+        credibilityScore -= biasAnalysis.biasScore * 2;
+        credibilityScore = Math.max(0, Math.min(100, credibilityScore));
+
+        let credibilityLevel = '';
+        if (credibilityScore >= 80) credibilityLevel = 'High';
+        else if (credibilityScore >= 60) credibilityLevel = 'Good';
+        else if (credibilityScore >= 40) credibilityLevel = 'Moderate';
+        else if (credibilityScore >= 20) credibilityLevel = 'Low';
+        else credibilityLevel = 'Very Low';
+
+        const credibilityColor = this.getQualityColor(credibilityScore);
+
+        analysisPanel.innerHTML = `
+          <div class="websage-analysis-results">
+            <div class="websage-analysis-header">
+              <h3>🏆 Page Credibility Assessment</h3>
+              <button class="websage-analysis-close" onclick="this.parentElement.parentElement.parentElement.style.display='none'">✕</button>
+            </div>
+            
+            <div class="websage-analysis-section">
+              <div class="websage-credibility-score">
+                <div class="websage-credibility-main">
+                  <div class="websage-credibility-number" style="color: ${credibilityColor}">
+                    ${credibilityScore}/100
+                  </div>
+                  <div class="websage-credibility-level">
+                    ${credibilityLevel} Credibility
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="websage-analysis-grid">
+              <div class="websage-analysis-card">
+                <div class="websage-analysis-title">🛡️ Fake News Risk</div>
+                <div class="websage-analysis-score" style="color: ${this.getRiskColor(fakeNewsAnalysis.riskLevel)}">
+                  ${fakeNewsAnalysis.riskLevel.toUpperCase()}
+                </div>
+              </div>
+
+              <div class="websage-analysis-card">
+                <div class="websage-analysis-title">⚖️ Bias Level</div>
+                <div class="websage-analysis-score" style="color: ${this.getSeverityColor(biasAnalysis.severity)}">
+                  ${biasAnalysis.severity.toUpperCase()}
+                </div>
+              </div>
+
+              <div class="websage-analysis-card">
+                <div class="websage-analysis-title">📚 Readability</div>
+                <div class="websage-analysis-score">
+                  ${readabilityAnalysis.readingLevel}
+                </div>
+              </div>
+
+              <div class="websage-analysis-card">
+                <div class="websage-analysis-title">📊 Content Quality</div>
+                <div class="websage-analysis-score" style="color: ${this.getQualityColor(qualityAnalysis.overallScore)}">
+                  ${qualityAnalysis.qualityLevel}
+                </div>
+              </div>
+            </div>
+
+            <div class="websage-analysis-section">
+              <div class="websage-analysis-subtitle">💡 Credibility Assessment</div>
+              <div class="websage-credibility-assessment">
+                ${this.getCredibilityAssessment(credibilityScore, fakeNewsAnalysis, biasAnalysis)}
+              </div>
+            </div>
+
+            <div class="websage-analysis-section">
+              <div class="websage-analysis-subtitle">🔍 Recommendations</div>
+              <ul class="websage-analysis-recommendations">
+                ${this.getCredibilityRecommendations(credibilityScore, fakeNewsAnalysis, biasAnalysis).map(rec =>
+          `<li>${rec}</li>`
+        ).join('')}
+              </ul>
+            </div>
+          </div>
+        `;
+
+      } catch (error) {
+        console.error('Credibility analysis error:', error);
+        analysisPanel.innerHTML = '<div class="websage-analysis-error">❌ Credibility analysis failed. Please try again.</div>';
+      }
+    }
+
+    getCredibilityAssessment(score, fakeNews, bias) {
+      if (score >= 80) {
+        return '✅ This page appears to be highly credible with minimal signs of misinformation or bias.';
+      } else if (score >= 60) {
+        return '👍 This page appears to be generally credible, but consider cross-referencing important claims.';
+      } else if (score >= 40) {
+        return '⚠️ This page shows some concerning patterns. Verify key information with reliable sources.';
+      } else if (score >= 20) {
+        return '🚨 This page has significant credibility issues. Exercise caution and fact-check thoroughly.';
+      } else {
+        return '❌ This page shows strong indicators of unreliable content. Avoid sharing without verification.';
+      }
+    }
+
+    getCredibilityRecommendations(score, fakeNews, bias) {
+      const recommendations = [];
+
+      if (score < 60) {
+        recommendations.push('🔍 Cross-reference information with multiple reliable sources');
+      }
+
+      if (fakeNews.riskLevel === 'high' || fakeNews.riskLevel === 'medium') {
+        recommendations.push('🛡️ High risk of misinformation detected - verify claims independently');
+      }
+
+      if (bias.severity === 'high') {
+        recommendations.push('⚖️ Strong bias detected - seek alternative perspectives');
+      }
+
+      if (score >= 80) {
+        recommendations.push('✅ Content appears reliable, but always verify important information');
+      }
+
+      if (recommendations.length === 0) {
+        recommendations.push('📚 Consider the source\'s reputation and track record');
+        recommendations.push('🔗 Check if claims are supported by credible references');
+      }
+
+      return recommendations;
+    }
+
     createChatWindow() {
       if (this.chatWindow) return;
 
@@ -364,10 +1105,12 @@ if (window.webSageLoaded) {
               <option value="gemini">Google Gemini</option>
               <option value="mistral">Mistral AI</option>
             </select>
+            <button id="websage-analyze" class="websage-btn-icon" title="Analyze Page">🔍</button>
             <button id="websage-clear" class="websage-btn-icon" title="Clear Chat">🗑️</button>
             <button id="websage-close" class="websage-btn-icon" title="Close">✕</button>
           </div>
         </div>
+        <div class="websage-analysis" id="websage-analysis" style="display: none;"></div>
         <div class="websage-messages" id="websage-messages"></div>
         <div class="websage-input-container">
           <textarea 
@@ -384,6 +1127,7 @@ if (window.webSageLoaded) {
     setupEventListeners() {
       const input = this.chatWindow.querySelector('#websage-input');
       const sendBtn = this.chatWindow.querySelector('#websage-send');
+      const analyzeBtn = this.chatWindow.querySelector('#websage-analyze');
       const clearBtn = this.chatWindow.querySelector('#websage-clear');
       const closeBtn = this.chatWindow.querySelector('#websage-close');
       const providerSelect = this.chatWindow.querySelector('#websage-provider');
@@ -393,6 +1137,9 @@ if (window.webSageLoaded) {
 
       // Send message
       sendBtn.addEventListener('click', () => this.sendMessage());
+
+      // Analyze page
+      analyzeBtn.addEventListener('click', () => this.analyzeCurrentPage());
 
       // Input handling
       input.addEventListener('keydown', (e) => {
@@ -742,6 +1489,171 @@ if (window.webSageLoaded) {
 
       // Clear context cache
       this.intelligentContext.cache.clear();
+
+      // Hide analysis panel
+      const analysisPanel = this.chatWindow.querySelector('#websage-analysis');
+      if (analysisPanel) {
+        analysisPanel.style.display = 'none';
+      }
+    }
+
+    // Analyze current page for fake news, bias, and quality
+    async analyzeCurrentPage() {
+      if (!this.nlpProcessor) {
+        this.showError('NLP processor not available. Please refresh the page.');
+        return;
+      }
+
+      const analysisPanel = this.chatWindow.querySelector('#websage-analysis');
+      analysisPanel.style.display = 'block';
+      analysisPanel.innerHTML = '<div class="websage-analysis-loading">🔍 Analyzing page content...</div>';
+
+      try {
+        // Get page text content
+        const pageText = document.body.innerText || document.body.textContent || '';
+
+        if (pageText.length < 100) {
+          analysisPanel.innerHTML = '<div class="websage-analysis-error">⚠️ Not enough content to analyze</div>';
+          return;
+        }
+
+        // Perform comprehensive analysis
+        const analysis = this.nlpProcessor.analyzeContent(pageText);
+
+        // Display results
+        this.displayAnalysisResults(analysis);
+
+      } catch (error) {
+        console.error('Analysis error:', error);
+        analysisPanel.innerHTML = '<div class="websage-analysis-error">❌ Analysis failed. Please try again.</div>';
+      }
+    }
+
+    displayAnalysisResults(analysis) {
+      const analysisPanel = this.chatWindow.querySelector('#websage-analysis');
+
+      const fakeNewsColor = this.getRiskColor(analysis.fakeNews.riskLevel);
+      const biasColor = this.getSeverityColor(analysis.bias.severity);
+      const qualityColor = this.getQualityColor(analysis.quality.overallScore);
+
+      analysisPanel.innerHTML = `
+        <div class="websage-analysis-results">
+          <div class="websage-analysis-header">
+            <h3>📊 Page Analysis Results</h3>
+            <button class="websage-analysis-close" onclick="this.parentElement.parentElement.parentElement.style.display='none'">✕</button>
+          </div>
+          
+          <div class="websage-analysis-grid">
+            <div class="websage-analysis-card">
+              <div class="websage-analysis-title">🛡️ Fake News Detection</div>
+              <div class="websage-analysis-score" style="color: ${fakeNewsColor}">
+                ${analysis.fakeNews.riskLevel.toUpperCase()}
+              </div>
+              <div class="websage-analysis-detail">
+                Score: ${analysis.fakeNews.suspicionScore}/20
+              </div>
+              <div class="websage-analysis-recommendation">
+                ${analysis.fakeNews.recommendation}
+              </div>
+            </div>
+
+            <div class="websage-analysis-card">
+              <div class="websage-analysis-title">⚖️ Bias Detection</div>
+              <div class="websage-analysis-score" style="color: ${biasColor}">
+                ${analysis.bias.severity.toUpperCase()}
+              </div>
+              <div class="websage-analysis-detail">
+                Types: ${analysis.bias.biasTypes.length > 0 ? analysis.bias.biasTypes.join(', ') : 'None detected'}
+              </div>
+            </div>
+
+            <div class="websage-analysis-card">
+              <div class="websage-analysis-title">📈 Content Quality</div>
+              <div class="websage-analysis-score" style="color: ${qualityColor}">
+                ${analysis.quality.overallScore}/100
+              </div>
+              <div class="websage-analysis-detail">
+                Level: ${analysis.quality.qualityLevel}
+              </div>
+            </div>
+
+            <div class="websage-analysis-card">
+              <div class="websage-analysis-title">📚 Readability</div>
+              <div class="websage-analysis-score">
+                ${analysis.readability.readingLevel}
+              </div>
+              <div class="websage-analysis-detail">
+                Flesch Score: ${analysis.readability.fleschScore}
+              </div>
+            </div>
+          </div>
+
+          <div class="websage-analysis-section">
+            <div class="websage-analysis-subtitle">🎯 Key Topics</div>
+            <div class="websage-analysis-tags">
+              ${analysis.topics.slice(0, 5).map(topic =>
+        `<span class="websage-analysis-tag">${topic.topic}</span>`
+      ).join('')}
+            </div>
+          </div>
+
+          <div class="websage-analysis-section">
+            <div class="websage-analysis-subtitle">🔑 Keywords</div>
+            <div class="websage-analysis-tags">
+              ${analysis.keywords.slice(0, 8).map(keyword =>
+        `<span class="websage-analysis-tag">${keyword.word} (${keyword.frequency})</span>`
+      ).join('')}
+            </div>
+          </div>
+
+          <div class="websage-analysis-section">
+            <div class="websage-analysis-subtitle">💡 Recommendations</div>
+            <ul class="websage-analysis-recommendations">
+              ${analysis.quality.recommendations.map(rec =>
+        `<li>${rec}</li>`
+      ).join('')}
+            </ul>
+          </div>
+
+          ${analysis.fakeNews.indicators.length > 0 ? `
+          <div class="websage-analysis-section">
+            <div class="websage-analysis-subtitle">⚠️ Detected Issues</div>
+            <ul class="websage-analysis-issues">
+              ${analysis.fakeNews.indicators.map(indicator =>
+        `<li>${indicator}</li>`
+      ).join('')}
+            </ul>
+          </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    getRiskColor(riskLevel) {
+      switch (riskLevel) {
+        case 'high': return '#e74c3c';
+        case 'medium': return '#f39c12';
+        case 'low-medium': return '#f1c40f';
+        default: return '#27ae60';
+      }
+    }
+
+    getSeverityColor(severity) {
+      switch (severity) {
+        case 'high': return '#e74c3c';
+        case 'medium': return '#f39c12';
+        default: return '#27ae60';
+      }
+    }
+
+    getQualityColor(score) {
+      if (score >= 80) return '#27ae60';
+      if (score >= 60) return '#f39c12';
+      return '#e74c3c';
+    }
+
+    async saveSettings() {
+      chrome.storage.local.set({ webSageSettings: this.settings });
     }
 
     getPageContext() {
@@ -1006,31 +1918,16 @@ if (window.webSageLoaded) {
   // Initialize WebSage when page loads
   console.log('WebSage content script loaded');
 
-  // Load NLP processor first, then initialize WebSage
-  const loadNLPProcessor = () => {
-    return new Promise((resolve) => {
-      const script = document.createElement('script');
-      script.src = chrome.runtime.getURL('nlp-processor.js');
-      script.onload = resolve;
-      script.onerror = () => {
-        console.warn('NLP processor failed to load, using basic functionality');
-        // Don't create a fallback class, just resolve
-        resolve();
-      };
-      document.head.appendChild(script);
-    });
-  };
-
+  // Initialize WebSage - NLP processor should be available since it's loaded as content script
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', async () => {
-      console.log('WebSage initializing on DOMContentLoaded');
-      await loadNLPProcessor();
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('🚀 WebSage initializing on DOMContentLoaded');
+      console.log('🔍 Checking AdvancedNLPProcessor availability:', typeof window.AdvancedNLPProcessor);
       new WebSageChat();
     });
   } else {
-    console.log('WebSage initializing immediately');
-    loadNLPProcessor().then(() => {
-      new WebSageChat();
-    });
+    console.log('🚀 WebSage initializing immediately');
+    console.log('🔍 Checking AdvancedNLPProcessor availability:', typeof window.AdvancedNLPProcessor);
+    new WebSageChat();
   }
 }

@@ -1,13 +1,47 @@
-# Security Policy
+<div align="center">
 
-## Supported Versions
+# 🔒 WebSage Security Policy
 
-We actively support the following versions of WebSage with security updates:
+### *Your privacy and security are our top priorities*
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 2.0.x   | :white_check_mark: |
-| 1.0.x   | :x:                |
+[![Security](https://img.shields.io/badge/security-first-green.svg)](https://github.com/Xenonesis/WebSage/security)
+[![Privacy](https://img.shields.io/badge/privacy-protected-blue.svg)](https://github.com/Xenonesis/WebSage)
+[![Open Source](https://img.shields.io/badge/open%20source-transparent-orange.svg)](https://github.com/Xenonesis/WebSage)
+
+*Comprehensive security measures and privacy protection for WebSage users*
+
+[🛡️ Security Features](#-security-features) • [🚨 Report Issues](#-reporting-a-vulnerability) • [📋 Best Practices](#-security-best-practices-for-users) • [🏗️ Architecture](#-security-architecture)
+
+</div>
+
+---
+
+## 📋 Supported Versions
+
+<table>
+<tr>
+<td align="center" width="50%">
+
+### ✅ **Currently Supported**
+
+| Version | Status | Security Updates |
+|---------|--------|------------------|
+| **2.0.x** | 🟢 Active | ✅ Full support |
+| **2.1.x** | 🔵 Upcoming | ✅ Planned |
+
+</td>
+<td align="center" width="50%">
+
+### ❌ **Legacy Versions**
+
+| Version | Status | Security Updates |
+|---------|--------|------------------|
+| **1.0.x** | 🔴 Deprecated | ❌ No support |
+| **< 1.0** | 🔴 Unsupported | ❌ No support |
+
+</td>
+</tr>
+</table>
 
 ## Security Features
 

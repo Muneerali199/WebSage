@@ -39,37 +39,73 @@ class WebSageBackground {
         contexts: ['page', 'selection']
       });
 
-      // Quick actions
+      // Quick actions for selected text
       chrome.contextMenus.create({
         id: 'websage-explain',
         parentId: 'websage-main',
-        title: 'Explain this',
+        title: '💬 Explain this',
         contexts: ['selection']
       });
 
       chrome.contextMenus.create({
         id: 'websage-summarize',
         parentId: 'websage-main',
-        title: 'Summarize this',
+        title: '📝 Summarize this',
         contexts: ['selection']
       });
 
       chrome.contextMenus.create({
         id: 'websage-translate',
         parentId: 'websage-main',
-        title: 'Translate this',
+        title: '🌐 Translate this',
         contexts: ['selection']
       });
 
       chrome.contextMenus.create({
-        id: 'websage-analyze',
+        id: 'websage-analyze-sentiment',
         parentId: 'websage-main',
-        title: 'Analyze sentiment',
+        title: '😊 Analyze sentiment',
+        contexts: ['selection']
+      });
+
+      // New fake news and bias detection options
+      chrome.contextMenus.create({
+        id: 'websage-check-fake-news',
+        parentId: 'websage-main',
+        title: '🛡️ Check for fake news',
         contexts: ['selection']
       });
 
       chrome.contextMenus.create({
-        id: 'websage-separator',
+        id: 'websage-detect-bias',
+        parentId: 'websage-main',
+        title: '⚖️ Detect bias',
+        contexts: ['selection']
+      });
+
+      chrome.contextMenus.create({
+        id: 'websage-separator1',
+        parentId: 'websage-main',
+        type: 'separator'
+      });
+
+      // Page-level analysis options
+      chrome.contextMenus.create({
+        id: 'websage-analyze-page',
+        parentId: 'websage-main',
+        title: '🔍 Analyze entire page',
+        contexts: ['page']
+      });
+
+      chrome.contextMenus.create({
+        id: 'websage-check-page-credibility',
+        parentId: 'websage-main',
+        title: '🏆 Check page credibility',
+        contexts: ['page']
+      });
+
+      chrome.contextMenus.create({
+        id: 'websage-separator2',
         parentId: 'websage-main',
         type: 'separator'
       });
@@ -77,7 +113,7 @@ class WebSageBackground {
       chrome.contextMenus.create({
         id: 'websage-chat',
         parentId: 'websage-main',
-        title: 'Open WebSage Chat',
+        title: '💬 Open WebSage Chat',
         contexts: ['page']
       });
     });
@@ -159,8 +195,20 @@ class WebSageBackground {
         case 'websage-translate':
           await this.sendContextMenuMessage(tab.id, 'translate', info.selectionText);
           break;
-        case 'websage-analyze':
+        case 'websage-analyze-sentiment':
           await this.sendContextMenuMessage(tab.id, 'analyze', info.selectionText);
+          break;
+        case 'websage-check-fake-news':
+          await this.sendContextMenuMessage(tab.id, 'check-fake-news', info.selectionText);
+          break;
+        case 'websage-detect-bias':
+          await this.sendContextMenuMessage(tab.id, 'detect-bias', info.selectionText);
+          break;
+        case 'websage-analyze-page':
+          await this.sendContextMenuMessage(tab.id, 'analyze-page', '');
+          break;
+        case 'websage-check-page-credibility':
+          await this.sendContextMenuMessage(tab.id, 'check-credibility', '');
           break;
         case 'websage-chat':
           await this.sendContextMenuMessage(tab.id, 'toggle', '');
