@@ -731,7 +731,7 @@ copies or substantial portions of the Software.
 [![GitHub stars](https://img.shields.io/github/stars/Xenonesis/WebSage?style=social)](https://github.com/Xenonesis/WebSage/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/Xenonesis/WebSage?style=social)](https://github.com/Xenonesis/WebSage/network)
 
-**Made with ❤️ by the WebSage community**
+**Made with ❤️ by Xenonesis**
 
 *Transform your browsing experience today!*
 
