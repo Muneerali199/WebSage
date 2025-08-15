@@ -20,16 +20,16 @@
 
 /* Light theme (explicit) */
 #websage-chat-window.light {
-  background: #ffffff;
-  border: 1px solid #e1e5e9;
-  color: #333333;
+  background: #ffffff !important;
+  border: 1px solid #e1e5e9 !important;
+  color: #333333 !important;
 }
 
 /* Dark theme */
 #websage-chat-window.dark {
-  background: #1a1a1a;
-  border: 1px solid #333;
-  color: #ffffff;
+  background: #1a1a1a !important;
+  border: 1px solid #333 !important;
+  color: #ffffff !important;
 }
 
 /* Header */
@@ -43,14 +43,14 @@
   user-select: none;
 }
 
-.light .websage-header {
-  background: #f8f9fa;
-  border-bottom: 1px solid #e1e5e9;
+#websage-chat-window.light .websage-header {
+  background: #f8f9fa !important;
+  border-bottom: 1px solid #e1e5e9 !important;
 }
 
-.dark .websage-header {
-  background: #2d2d2d;
-  border-bottom: 1px solid #444;
+#websage-chat-window.dark .websage-header {
+  background: #2d2d2d !important;
+  border-bottom: 1px solid #444 !important;
 }
 
 .websage-title {
@@ -59,12 +59,12 @@
   font-weight: 600;
 }
 
-.light .websage-title {
-  color: #2c3e50;
+#websage-chat-window.light .websage-title {
+  color: #2c3e50 !important;
 }
 
-.dark .websage-title {
-  color: #ffffff;
+#websage-chat-window.dark .websage-title {
+  color: #ffffff !important;
 }
 
 .websage-logo {
@@ -85,16 +85,16 @@
   cursor: pointer;
 }
 
-.light .websage-select {
-  background: white;
-  border: 1px solid #ddd;
-  color: #333;
+#websage-chat-window.light .websage-select {
+  background: white !important;
+  border: 1px solid #ddd !important;
+  color: #333 !important;
 }
 
-.dark .websage-select {
-  background: #333;
-  border: 1px solid #555;
-  color: white;
+#websage-chat-window.dark .websage-select {
+  background: #333 !important;
+  border: 1px solid #555 !important;
+  color: white !important;
 }
 
 .websage-btn-icon {
@@ -113,7 +113,7 @@
   background: rgba(0, 0, 0, 0.05);
 }
 
-.dark .websage-btn-icon:hover {
+#websage-chat-window.dark .websage-btn-icon:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 
@@ -147,15 +147,15 @@
   justify-content: flex-start;
 }
 
-.light .websage-message-assistant .websage-message-content {
-  background: #f1f3f4;
-  color: #333;
+#websage-chat-window.light .websage-message-assistant .websage-message-content {
+  background: #f1f3f4 !important;
+  color: #333 !important;
   border-radius: 18px 18px 18px 4px;
 }
 
-.dark .websage-message-assistant .websage-message-content {
-  background: #333;
-  color: #ffffff;
+#websage-chat-window.dark .websage-message-assistant .websage-message-content {
+  background: #333 !important;
+  color: #ffffff !important;
   border-radius: 18px 18px 18px 4px;
 }
 
@@ -182,7 +182,7 @@
   background: rgba(0, 0, 0, 0.05);
 }
 
-.dark .websage-copy-btn:hover {
+#websage-chat-window.dark .websage-copy-btn:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 
@@ -196,9 +196,9 @@
   animation: pulse 1.5s infinite;
 }
 
-.dark .websage-typing-indicator {
-  background: #333;
-  color: #ccc;
+#websage-chat-window.dark .websage-typing-indicator {
+  background: #333 !important;
+  color: #ccc !important;
 }
 
 @keyframes pulse {
@@ -214,12 +214,12 @@
   align-items: flex-end;
 }
 
-.light .websage-input-container {
-  border-top: 1px solid #e1e5e9;
+#websage-chat-window.light .websage-input-container {
+  border-top: 1px solid #e1e5e9 !important;
 }
 
-.dark .websage-input-container {
-  border-top: 1px solid #444;
+#websage-chat-window.dark .websage-input-container {
+  border-top: 1px solid #444 !important;
 }
 
 #websage-input {
@@ -235,24 +235,24 @@
   transition: border-color 0.2s;
 }
 
-.light #websage-input {
-  background: #ffffff;
-  border: 1px solid #ddd;
-  color: #333;
+#websage-chat-window.light #websage-input {
+  background: #ffffff !important;
+  border: 1px solid #ddd !important;
+  color: #333 !important;
 }
 
-.light #websage-input:focus {
-  border-color: #007bff;
+#websage-chat-window.light #websage-input:focus {
+  border-color: #007bff !important;
 }
 
-.dark #websage-input {
-  background: #333;
-  border: 1px solid #555;
-  color: white;
+#websage-chat-window.dark #websage-input {
+  background: #333 !important;
+  border: 1px solid #555 !important;
+  color: white !important;
 }
 
-.dark #websage-input:focus {
-  border-color: #007bff;
+#websage-chat-window.dark #websage-input:focus {
+  border-color: #007bff !important;
 }
 
 .websage-btn-send {
@@ -284,40 +284,40 @@
   transition: all 0.3s ease;
 }
 
-.light .websage-status.websage-error {
-  color: #dc3545;
-  background: #f8d7da;
-  border-top: 1px solid #f5c6cb;
+#websage-chat-window.light .websage-status.websage-error {
+  color: #dc3545 !important;
+  background: #f8d7da !important;
+  border-top: 1px solid #f5c6cb !important;
 }
 
-.light .websage-status.websage-success {
-  color: #155724;
-  background: #d4edda;
-  border-top: 1px solid #c3e6cb;
+#websage-chat-window.light .websage-status.websage-success {
+  color: #155724 !important;
+  background: #d4edda !important;
+  border-top: 1px solid #c3e6cb !important;
 }
 
-.light .websage-status.websage-info {
-  color: #0c5460;
-  background: #d1ecf1;
-  border-top: 1px solid #bee5eb;
+#websage-chat-window.light .websage-status.websage-info {
+  color: #0c5460 !important;
+  background: #d1ecf1 !important;
+  border-top: 1px solid #bee5eb !important;
 }
 
-.dark .websage-status.websage-error {
-  color: #ff6b6b;
-  background: #2d1b1b;
-  border-top: 1px solid #5a2a2a;
+#websage-chat-window.dark .websage-status.websage-error {
+  color: #ff6b6b !important;
+  background: #2d1b1b !important;
+  border-top: 1px solid #5a2a2a !important;
 }
 
-.dark .websage-status.websage-success {
-  color: #4caf50;
-  background: #1b2d1b;
-  border-top: 1px solid #2a5a2a;
+#websage-chat-window.dark .websage-status.websage-success {
+  color: #4caf50 !important;
+  background: #1b2d1b !important;
+  border-top: 1px solid #2a5a2a !important;
 }
 
-.dark .websage-status.websage-info {
-  color: #29b6f6;
-  background: #1b2a2d;
-  border-top: 1px solid #2a4a5a;
+#websage-chat-window.dark .websage-status.websage-info {
+  color: #29b6f6 !important;
+  background: #1b2a2d !important;
+  border-top: 1px solid #2a4a5a !important;
 }
 
 /* Performance indicator */
@@ -338,9 +338,9 @@
   opacity: 1;
 }
 
-.dark .websage-performance {
-  background: rgba(0, 0, 0, 0.8);
-  color: #ccc;
+#websage-chat-window.dark .websage-performance {
+  background: rgba(0, 0, 0, 0.8) !important;
+  color: #ccc !important;
 }
 
 /* Enhanced message styling */
