@@ -1,0 +1,65 @@
+# WebSage v3.0 - Git Ignore File
+
+# Development files
+*.log
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node modules (if any)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build files
+dist/
+build/
+*.zip
+
+# API Keys and sensitive data
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Chrome extension development
+*.crx
+*.pem
+key.pem
+
+# Test files
+test-*.html
+debug-*.js
+standalone-*.html
+
+# Temporary files
+temp/
+tmp/
+*.bak
+*.backup
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# WebSage specific
+nlp-processor.js
+nlp-simple.js
+test-extension.html
+test-fake-news.html
+test-simple.html
+debug-extension.js

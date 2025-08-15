@@ -5,8 +5,6 @@
   right: 20px;
   width: 380px;
   height: 500px;
-  background: #ffffff;
-  border: 1px solid #e1e5e9;
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   z-index: 2147483647;
@@ -20,10 +18,17 @@
   min-height: 400px;
 }
 
+/* Light theme (explicit) */
+#websage-chat-window.light {
+  background: #ffffff;
+  border: 1px solid #e1e5e9;
+  color: #333333;
+}
+
 /* Dark theme */
 #websage-chat-window.dark {
   background: #1a1a1a;
-  border-color: #333;
+  border: 1px solid #333;
   color: #ffffff;
 }
 
@@ -33,22 +38,28 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  background: #f8f9fa;
-  border-bottom: 1px solid #e1e5e9;
   border-radius: 12px 12px 0 0;
   cursor: move;
   user-select: none;
 }
 
+.light .websage-header {
+  background: #f8f9fa;
+  border-bottom: 1px solid #e1e5e9;
+}
+
 .dark .websage-header {
   background: #2d2d2d;
-  border-bottom-color: #444;
+  border-bottom: 1px solid #444;
 }
 
 .websage-title {
   display: flex;
   align-items: center;
   font-weight: 600;
+}
+
+.light .websage-title {
   color: #2c3e50;
 }
 
@@ -69,16 +80,20 @@
 
 .websage-select {
   padding: 4px 8px;
-  border: 1px solid #ddd;
   border-radius: 6px;
-  background: white;
   font-size: 12px;
   cursor: pointer;
 }
 
+.light .websage-select {
+  background: white;
+  border: 1px solid #ddd;
+  color: #333;
+}
+
 .dark .websage-select {
   background: #333;
-  border-color: #555;
+  border: 1px solid #555;
   color: white;
 }
 
@@ -132,7 +147,7 @@
   justify-content: flex-start;
 }
 
-.websage-message-assistant .websage-message-content {
+.light .websage-message-assistant .websage-message-content {
   background: #f1f3f4;
   color: #333;
   border-radius: 18px 18px 18px 4px;
@@ -141,6 +156,7 @@
 .dark .websage-message-assistant .websage-message-content {
   background: #333;
   color: #ffffff;
+  border-radius: 18px 18px 18px 4px;
 }
 
 .websage-message-content {
@@ -195,17 +211,19 @@
   display: flex;
   padding: 16px;
   gap: 8px;
-  border-top: 1px solid #e1e5e9;
   align-items: flex-end;
 }
 
+.light .websage-input-container {
+  border-top: 1px solid #e1e5e9;
+}
+
 .dark .websage-input-container {
-  border-top-color: #444;
+  border-top: 1px solid #444;
 }
 
 #websage-input {
   flex: 1;
-  border: 1px solid #ddd;
   border-radius: 20px;
   padding: 10px 16px;
   resize: none;
@@ -217,13 +235,19 @@
   transition: border-color 0.2s;
 }
 
-#websage-input:focus {
+.light #websage-input {
+  background: #ffffff;
+  border: 1px solid #ddd;
+  color: #333;
+}
+
+.light #websage-input:focus {
   border-color: #007bff;
 }
 
 .dark #websage-input {
   background: #333;
-  border-color: #555;
+  border: 1px solid #555;
   color: white;
 }
 
@@ -260,37 +284,40 @@
   transition: all 0.3s ease;
 }
 
-.websage-status.websage-error {
+.light .websage-status.websage-error {
   color: #dc3545;
   background: #f8d7da;
   border-top: 1px solid #f5c6cb;
 }
 
-.websage-status.websage-success {
+.light .websage-status.websage-success {
   color: #155724;
   background: #d4edda;
   border-top: 1px solid #c3e6cb;
 }
 
-.websage-status.websage-info {
+.light .websage-status.websage-info {
   color: #0c5460;
   background: #d1ecf1;
   border-top: 1px solid #bee5eb;
 }
 
 .dark .websage-status.websage-error {
+  color: #ff6b6b;
   background: #2d1b1b;
-  border-top-color: #5a2a2a;
+  border-top: 1px solid #5a2a2a;
 }
 
 .dark .websage-status.websage-success {
+  color: #4caf50;
   background: #1b2d1b;
-  border-top-color: #2a5a2a;
+  border-top: 1px solid #2a5a2a;
 }
 
 .dark .websage-status.websage-info {
+  color: #29b6f6;
   background: #1b2a2d;
-  border-top-color: #2a4a5a;
+  border-top: 1px solid #2a4a5a;
 }
 
 /* Performance indicator */

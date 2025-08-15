@@ -21,75 +21,214 @@ if (window.webSageLoaded) {
       const lowerText = text.toLowerCase();
       let suspicionScore = 0;
       const indicators = [];
+      const detectedPatterns = [];
 
-      // Sensational words
+      // Advanced sensational language detection
       const sensationalWords = [
         'shocking', 'unbelievable', 'incredible', 'amazing', 'stunning', 'outrageous',
-        'explosive', 'bombshell', 'devastating', 'mind-blowing', 'jaw-dropping'
+        'explosive', 'bombshell', 'devastating', 'mind-blowing', 'jaw-dropping',
+        'unprecedented', 'revolutionary', 'groundbreaking', 'earth-shattering',
+        'life-changing', 'miraculous', 'forbidden', 'secret', 'hidden', 'exposed',
+        'revealed', 'uncovered', 'leaked', 'exclusive', 'breaking', 'urgent'
       ];
       
       const sensationalCount = sensationalWords.filter(word => lowerText.includes(word)).length;
       if (sensationalCount > 0) {
-        suspicionScore += sensationalCount * 3;
-        indicators.push(`Contains ${sensationalCount} sensational words`);
+        const score = Math.min(sensationalCount * 2, 12);
+        suspicionScore += score;
+        indicators.push(`Sensational language detected (${sensationalCount} instances)`);
+        detectedPatterns.push('sensational_language');
       }
 
-      // Clickbait phrases
+      // Advanced clickbait detection
       const clickbaitPhrases = [
         'you won\'t believe', 'what happens next', 'doctors hate', 'this one trick',
-        'the results will surprise you', 'don\'t want you to know'
+        'the results will surprise you', 'don\'t want you to know', 'will shock you',
+        'number [0-9]+ will', 'wait until you see', 'gone wrong', 'gone right',
+        'what happened next', 'the reason why', 'this is why', 'here\'s why',
+        'you need to see', 'must see', 'watch what happens', 'the truth about',
+        'they tried to hide', 'mainstream media', 'big pharma', 'government doesn\'t want'
       ];
       
-      const clickbaitCount = clickbaitPhrases.filter(phrase => lowerText.includes(phrase)).length;
+      let clickbaitCount = 0;
+      clickbaitPhrases.forEach(phrase => {
+        const regex = new RegExp(phrase.replace(/\[0-9\]\+/g, '\\d+'), 'gi');
+        if (regex.test(lowerText)) clickbaitCount++;
+      });
+      
       if (clickbaitCount > 0) {
-        suspicionScore += clickbaitCount * 5;
-        indicators.push(`Contains ${clickbaitCount} clickbait phrases`);
+        const score = Math.min(clickbaitCount * 4, 16);
+        suspicionScore += score;
+        indicators.push(`Clickbait patterns detected (${clickbaitCount} instances)`);
+        detectedPatterns.push('clickbait');
       }
 
-      // ALL CAPS check
-      const allCaps = (text.match(/[A-Z]{3,}/g) || []).length;
-      if (allCaps > 2) {
-        suspicionScore += allCaps;
-        indicators.push(`Excessive use of ALL CAPS (${allCaps})`);
+      // Conspiracy theory indicators
+      const conspiracyTerms = [
+        'deep state', 'new world order', 'illuminati', 'cover-up', 'conspiracy',
+        'they don\'t want you to know', 'wake up', 'sheeple', 'false flag',
+        'inside job', 'controlled opposition', 'puppet masters', 'shadow government',
+        'mainstream media lies', 'fake news media', 'propaganda', 'brainwashed'
+      ];
+      
+      const conspiracyCount = conspiracyTerms.filter(term => lowerText.includes(term)).length;
+      if (conspiracyCount > 0) {
+        const score = Math.min(conspiracyCount * 5, 20);
+        suspicionScore += score;
+        indicators.push(`Conspiracy theory language (${conspiracyCount} instances)`);
+        detectedPatterns.push('conspiracy');
       }
 
-      // Calculate risk level
+      // Emotional manipulation detection
+      const emotionalWords = [
+        'terrifying', 'horrifying', 'disgusting', 'outraged', 'furious',
+        'devastated', 'heartbroken', 'betrayed', 'abandoned', 'forgotten',
+        'dangerous', 'deadly', 'toxic', 'poisonous', 'harmful', 'threatening',
+        'scary', 'frightening', 'alarming', 'disturbing', 'shocking'
+      ];
+      
+      const emotionalCount = emotionalWords.filter(word => lowerText.includes(word)).length;
+      if (emotionalCount > 2) {
+        const score = Math.min((emotionalCount - 2) * 2, 10);
+        suspicionScore += score;
+        indicators.push(`Emotional manipulation detected (${emotionalCount} emotional words)`);
+        detectedPatterns.push('emotional_manipulation');
+      }
+
+      // Unreliable sourcing patterns
+      const unreliableSources = [
+        'some say', 'many believe', 'it is said', 'sources claim', 'allegedly',
+        'reportedly', 'rumored', 'supposedly', 'apparently', 'word is',
+        'people are saying', 'everyone knows', 'common knowledge', 'obvious fact',
+        'unnamed sources', 'anonymous tip', 'insider information', 'leaked documents'
+      ];
+      
+      const unreliableCount = unreliableSources.filter(phrase => lowerText.includes(phrase)).length;
+      if (unreliableCount > 0) {
+        const score = Math.min(unreliableCount * 3, 12);
+        suspicionScore += score;
+        indicators.push(`Unreliable sourcing patterns (${unreliableCount} instances)`);
+        detectedPatterns.push('unreliable_sourcing');
+      }
+
+      // Medical/health misinformation patterns
+      const medicalMisinfo = [
+        'doctors hate this', 'cure they don\'t want', 'big pharma conspiracy',
+        'natural cure', 'miracle cure', 'instant cure', 'secret remedy',
+        'pharmaceutical companies', 'medical establishment', 'suppress this cure',
+        'alternative medicine', 'ancient secret', 'traditional remedy'
+      ];
+      
+      const medicalCount = medicalMisinfo.filter(phrase => lowerText.includes(phrase)).length;
+      if (medicalCount > 0) {
+        const score = Math.min(medicalCount * 4, 16);
+        suspicionScore += score;
+        indicators.push(`Medical misinformation patterns (${medicalCount} instances)`);
+        detectedPatterns.push('medical_misinfo');
+      }
+
+      // Formatting and presentation issues
+      const allCaps = (text.match(/[A-Z]{4,}/g) || []).length;
+      const exclamationMarks = (text.match(/!/g) || []).length;
+      const questionMarks = (text.match(/\?/g) || []).length;
+      
+      if (allCaps > 3) {
+        const score = Math.min((allCaps - 3) * 1, 8);
+        suspicionScore += score;
+        indicators.push(`Excessive capitalization (${allCaps} instances)`);
+        detectedPatterns.push('poor_formatting');
+      }
+      
+      if (exclamationMarks > 5) {
+        const score = Math.min((exclamationMarks - 5) * 0.5, 5);
+        suspicionScore += score;
+        indicators.push(`Excessive exclamation marks (${exclamationMarks})`);
+      }
+
+      // Credibility indicators (reduce suspicion)
+      const credibilityIndicators = [
+        'according to', 'research shows', 'study finds', 'data indicates',
+        'peer-reviewed', 'published in', 'journal of', 'university study',
+        'clinical trial', 'scientific evidence', 'expert opinion', 'professor',
+        'dr.', 'phd', 'researcher', 'scientist', 'official statement',
+        'government report', 'fda approved', 'verified', 'fact-checked'
+      ];
+      
+      const credibilityCount = credibilityIndicators.filter(phrase => lowerText.includes(phrase)).length;
+      if (credibilityCount > 0) {
+        const reduction = Math.min(credibilityCount * 3, 15);
+        suspicionScore = Math.max(0, suspicionScore - reduction);
+        indicators.push(`Credibility indicators found (${credibilityCount} instances)`);
+        detectedPatterns.push('credible_sources');
+      }
+
+      // Advanced risk calculation with pattern weighting
       let riskLevel = 'low';
       let confidence = 0.6;
+      
+      const patternWeight = detectedPatterns.length * 0.1;
+      const adjustedScore = suspicionScore + (patternWeight * 10);
 
-      if (suspicionScore >= 10) {
+      if (adjustedScore >= 25) {
+        riskLevel = 'critical';
+        confidence = 0.95;
+      } else if (adjustedScore >= 18) {
         riskLevel = 'high';
-        confidence = 0.85;
-      } else if (suspicionScore >= 5) {
+        confidence = 0.88;
+      } else if (adjustedScore >= 12) {
+        riskLevel = 'medium-high';
+        confidence = 0.82;
+      } else if (adjustedScore >= 8) {
         riskLevel = 'medium';
         confidence = 0.75;
-      } else if (suspicionScore >= 2) {
+      } else if (adjustedScore >= 4) {
         riskLevel = 'low-medium';
-        confidence = 0.65;
+        confidence = 0.68;
+      }
+
+      // Additional context analysis
+      const wordCount = text.split(/\s+/).length;
+      const sentenceCount = text.split(/[.!?]+/).filter(s => s.trim().length > 0).length;
+      const avgWordsPerSentence = wordCount / sentenceCount;
+      
+      if (avgWordsPerSentence < 8 && suspicionScore > 5) {
+        suspicionScore += 2;
+        indicators.push('Unusually short sentences with suspicious content');
       }
 
       const result = {
         riskLevel,
-        suspicionScore,
-        confidence,
+        suspicionScore: Math.round(adjustedScore),
+        confidence: Math.round(confidence * 100) / 100,
         indicators,
-        recommendation: this.getFakeNewsRecommendation(riskLevel)
+        detectedPatterns,
+        recommendation: this.getFakeNewsRecommendation(riskLevel),
+        analysisDetails: {
+          wordCount,
+          sentenceCount,
+          avgWordsPerSentence: Math.round(avgWordsPerSentence * 10) / 10,
+          credibilityScore: credibilityCount
+        }
       };
 
-      console.log('📊 Fake news analysis result:', result);
+      console.log('📊 Advanced fake news analysis result:', result);
       return result;
     }
 
     getFakeNewsRecommendation(riskLevel) {
       switch (riskLevel) {
+        case 'critical':
+          return '🚨 CRITICAL: Extremely high risk of misinformation. Do not share. Verify with multiple authoritative sources and fact-checking organizations.';
         case 'high':
-          return 'High risk of misinformation. Verify with multiple credible sources before sharing.';
+          return '⚠️ HIGH RISK: Strong indicators of misinformation. Cross-reference with reputable news sources, academic studies, and official statements before believing or sharing.';
+        case 'medium-high':
+          return '🔍 MEDIUM-HIGH RISK: Multiple concerning patterns detected. Verify key claims with credible sources like Reuters, AP News, or peer-reviewed research.';
         case 'medium':
-          return 'Moderate risk. Cross-check facts with reliable news sources.';
+          return '⚡ MODERATE RISK: Some suspicious elements present. Cross-check facts with reliable news sources and official organizations.';
         case 'low-medium':
-          return 'Some concerning patterns detected. Consider fact-checking key claims.';
+          return '💡 LOW-MEDIUM RISK: Minor concerning patterns detected. Consider fact-checking key claims with trusted sources.';
         default:
-          return 'Content appears relatively reliable, but always verify important information.';
+          return '✅ LOW RISK: Content appears relatively reliable, but always verify important information with authoritative sources.';
       }
     }
 
@@ -99,32 +238,202 @@ if (window.webSageLoaded) {
       const lowerText = text.toLowerCase();
       let biasScore = 0;
       const detectedBias = [];
+      const biasIndicators = [];
 
-      // Emotional words
-      const emotionalWords = ['outrageous', 'disgusting', 'shocking', 'unbelievable', 'terrifying', 'amazing'];
-      const emotionalCount = emotionalWords.filter(word => lowerText.includes(word)).length;
-      if (emotionalCount > 1) {
-        detectedBias.push('emotional');
-        biasScore += emotionalCount * 2;
+      // Political bias detection
+      const leftLeaningTerms = [
+        'progressive', 'liberal', 'socialist', 'equality', 'social justice', 'climate change',
+        'systemic racism', 'wealth inequality', 'corporate greed', 'workers rights',
+        'universal healthcare', 'gun control', 'reproductive rights', 'lgbtq rights',
+        'environmental protection', 'minimum wage', 'tax the rich', 'medicare for all'
+      ];
+      
+      const rightLeaningTerms = [
+        'conservative', 'traditional', 'patriotic', 'free market', 'law and order',
+        'family values', 'second amendment', 'pro-life', 'border security',
+        'fiscal responsibility', 'limited government', 'personal responsibility',
+        'religious freedom', 'constitutional rights', 'american values', 'strong defense'
+      ];
+
+      const leftCount = leftLeaningTerms.filter(term => lowerText.includes(term)).length;
+      const rightCount = rightLeaningTerms.filter(term => lowerText.includes(term)).length;
+
+      if (leftCount > rightCount + 2) {
+        detectedBias.push('left-leaning');
+        biasScore += (leftCount - rightCount) * 2;
+        biasIndicators.push(`Left-leaning political language (${leftCount} instances)`);
+      } else if (rightCount > leftCount + 2) {
+        detectedBias.push('right-leaning');
+        biasScore += (rightCount - leftCount) * 2;
+        biasIndicators.push(`Right-leaning political language (${rightCount} instances)`);
       }
 
-      // Absolute statements
-      const absoluteWords = ['all', 'every', 'always', 'never', 'everyone', 'no one', 'completely'];
+      // Emotional manipulation and loaded language
+      const emotionalWords = [
+        'outrageous', 'disgusting', 'shocking', 'unbelievable', 'terrifying', 'amazing',
+        'horrific', 'devastating', 'appalling', 'sickening', 'infuriating', 'heartbreaking',
+        'inspiring', 'heroic', 'courageous', 'brilliant', 'genius', 'perfect', 'flawless'
+      ];
+      
+      const emotionalCount = emotionalWords.filter(word => lowerText.includes(word)).length;
+      if (emotionalCount > 2) {
+        detectedBias.push('emotional');
+        biasScore += Math.min(emotionalCount * 1.5, 10);
+        biasIndicators.push(`Emotional manipulation detected (${emotionalCount} emotional words)`);
+      }
+
+      // Loaded and prejudicial language
+      const loadedLanguage = [
+        'terrorist', 'extremist', 'radical', 'fanatic', 'thug', 'criminal', 'villain',
+        'hero', 'saint', 'angel', 'victim', 'monster', 'beast', 'savage', 'barbarian',
+        'elite', 'establishment', 'deep state', 'swamp', 'corrupt', 'crooked'
+      ];
+      
+      const loadedCount = loadedLanguage.filter(word => lowerText.includes(word)).length;
+      if (loadedCount > 1) {
+        detectedBias.push('loaded-language');
+        biasScore += loadedCount * 3;
+        biasIndicators.push(`Loaded/prejudicial language (${loadedCount} instances)`);
+      }
+
+      // Overgeneralization and absolute statements
+      const absoluteWords = [
+        'all', 'every', 'always', 'never', 'everyone', 'no one', 'completely',
+        'totally', 'absolutely', 'entirely', 'wholly', 'universally', 'invariably',
+        'without exception', 'categorically', 'unequivocally', 'undoubtedly'
+      ];
+      
       const absoluteCount = absoluteWords.filter(word => lowerText.includes(word)).length;
-      if (absoluteCount > 2) {
+      if (absoluteCount > 3) {
         detectedBias.push('overgeneralizing');
-        biasScore += absoluteCount;
+        biasScore += Math.min((absoluteCount - 3) * 1, 8);
+        biasIndicators.push(`Overgeneralization patterns (${absoluteCount} absolute statements)`);
+      }
+
+      // Stereotyping and group generalizations
+      const stereotypingPatterns = [
+        'those people', 'they all', 'typical', 'as usual', 'what do you expect',
+        'that\'s just how they are', 'you know how', 'classic', 'predictable',
+        'same old', 'nothing new', 'par for the course'
+      ];
+      
+      const stereotypingCount = stereotypingPatterns.filter(pattern => lowerText.includes(pattern)).length;
+      if (stereotypingCount > 0) {
+        detectedBias.push('stereotyping');
+        biasScore += stereotypingCount * 4;
+        biasIndicators.push(`Stereotyping language detected (${stereotypingCount} instances)`);
+      }
+
+      // False dichotomy and polarizing language
+      const polarizingTerms = [
+        'us vs them', 'good vs evil', 'right vs wrong', 'with us or against us',
+        'either you\'re', 'there are only two', 'you\'re either', 'pick a side',
+        'black and white', 'no middle ground', 'clear choice', 'simple choice'
+      ];
+      
+      const polarizingCount = polarizingTerms.filter(term => lowerText.includes(term)).length;
+      if (polarizingCount > 0) {
+        detectedBias.push('polarizing');
+        biasScore += polarizingCount * 3;
+        biasIndicators.push(`Polarizing/divisive language (${polarizingCount} instances)`);
+      }
+
+      // Cherry-picking and selective evidence
+      const cherryPickingTerms = [
+        'some studies show', 'one expert says', 'according to one source',
+        'a single study', 'isolated case', 'anecdotal evidence', 'personal experience',
+        'i heard that', 'someone told me', 'word on the street'
+      ];
+      
+      const cherryPickingCount = cherryPickingTerms.filter(term => lowerText.includes(term)).length;
+      if (cherryPickingCount > 0) {
+        detectedBias.push('cherry-picking');
+        biasScore += cherryPickingCount * 2;
+        biasIndicators.push(`Selective evidence patterns (${cherryPickingCount} instances)`);
+      }
+
+      // Ad hominem and personal attacks
+      const adHominemTerms = [
+        'stupid', 'idiot', 'moron', 'fool', 'ignorant', 'clueless', 'brainless',
+        'pathetic', 'loser', 'failure', 'incompetent', 'worthless', 'useless'
+      ];
+      
+      const adHominemCount = adHominemTerms.filter(term => lowerText.includes(term)).length;
+      if (adHominemCount > 0) {
+        detectedBias.push('ad-hominem');
+        biasScore += adHominemCount * 3;
+        biasIndicators.push(`Personal attacks detected (${adHominemCount} instances)`);
+      }
+
+      // Balanced language indicators (reduce bias score)
+      const balancedLanguage = [
+        'however', 'on the other hand', 'alternatively', 'in contrast', 'meanwhile',
+        'some argue', 'others believe', 'different perspectives', 'various viewpoints',
+        'it\'s worth noting', 'to be fair', 'balanced view', 'nuanced approach',
+        'complex issue', 'multiple factors', 'various opinions', 'different sides'
+      ];
+      
+      const balancedCount = balancedLanguage.filter(phrase => lowerText.includes(phrase)).length;
+      if (balancedCount > 0) {
+        const reduction = Math.min(balancedCount * 2, 10);
+        biasScore = Math.max(0, biasScore - reduction);
+        biasIndicators.push(`Balanced language found (${balancedCount} instances)`);
+      }
+
+      // Calculate severity with more nuanced levels
+      let severity = 'low';
+      let confidence = 0.6;
+
+      if (biasScore >= 20) {
+        severity = 'extreme';
+        confidence = 0.95;
+      } else if (biasScore >= 15) {
+        severity = 'high';
+        confidence = 0.88;
+      } else if (biasScore >= 10) {
+        severity = 'medium-high';
+        confidence = 0.82;
+      } else if (biasScore >= 6) {
+        severity = 'medium';
+        confidence = 0.75;
+      } else if (biasScore >= 3) {
+        severity = 'low-medium';
+        confidence = 0.68;
       }
 
       const result = {
         biasTypes: detectedBias,
-        biasScore,
-        severity: biasScore > 6 ? 'high' : biasScore > 3 ? 'medium' : 'low',
-        confidence: Math.min(0.9, 0.5 + biasScore * 0.05)
+        biasScore: Math.round(biasScore),
+        severity,
+        confidence: Math.round(confidence * 100) / 100,
+        indicators: biasIndicators,
+        recommendation: this.getBiasRecommendation(severity),
+        analysisDetails: {
+          politicalLean: leftCount > rightCount + 1 ? 'left' : rightCount > leftCount + 1 ? 'right' : 'neutral',
+          emotionalIntensity: emotionalCount,
+          balanceScore: balancedCount
+        }
       };
 
-      console.log('⚖️ Bias analysis result:', result);
+      console.log('⚖️ Advanced bias analysis result:', result);
       return result;
+    }
+
+    getBiasRecommendation(severity) {
+      switch (severity) {
+        case 'extreme':
+          return '🚨 EXTREME BIAS: Heavily biased content with strong ideological slant. Seek multiple diverse sources for balanced perspective.';
+        case 'high':
+          return '⚠️ HIGH BIAS: Significant bias detected. Cross-reference with sources from different political perspectives.';
+        case 'medium-high':
+          return '🔍 MEDIUM-HIGH BIAS: Notable bias patterns present. Consider alternative viewpoints and fact-check key claims.';
+        case 'medium':
+          return '⚡ MODERATE BIAS: Some bias detected. Be aware of potential slant and seek additional perspectives.';
+        case 'low-medium':
+          return '💡 LOW-MEDIUM BIAS: Minor bias indicators present. Generally balanced but consider multiple sources.';
+        default:
+          return '✅ LOW BIAS: Content appears relatively balanced and neutral in presentation.';
+      }
     }
 
     // Add missing methods that the content script expects
@@ -555,6 +864,15 @@ if (window.webSageLoaded) {
     async init() {
       await this.loadSettings();
       await this.loadConversationMemory();
+      
+      // Ensure we have a valid theme before creating the chat window
+      if (!this.settings.theme || (this.settings.theme !== 'light' && this.settings.theme !== 'dark')) {
+        // Detect system preference
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        this.settings.theme = prefersDark ? 'dark' : 'light';
+        console.log('🎨 Auto-detected theme:', this.settings.theme);
+      }
+      
       this.createChatWindow();
       this.setupGlobalToggle();
       this.initializeNLPProcessor();
@@ -600,6 +918,9 @@ if (window.webSageLoaded) {
     }
 
     getDefaultSettings() {
+      // Detect system theme preference
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      
       return {
         provider: 'openai',
         model: 'gpt-4o',
@@ -607,7 +928,7 @@ if (window.webSageLoaded) {
         memoryEnabled: true,
         contextMode: 'intelligent',
         maxTokens: 1500,
-        theme: 'light',
+        theme: prefersDark ? 'dark' : 'light',
         nlpEnabled: true,
         sentimentAnalysis: true,
         intentClassification: true,
@@ -742,46 +1063,127 @@ if (window.webSageLoaded) {
     }
 
     formatFakeNewsForChat(analysis, text) {
-      const riskEmoji = analysis.riskLevel === 'high' ? '🚨' : 
-                       analysis.riskLevel === 'medium' ? '⚠️' : 
-                       analysis.riskLevel === 'low-medium' ? '⚡' : '✅';
+      const riskEmoji = analysis.riskLevel === 'critical' ? '🚨' :
+                       analysis.riskLevel === 'high' ? '⚠️' : 
+                       analysis.riskLevel === 'medium-high' ? '🔍' :
+                       analysis.riskLevel === 'medium' ? '⚡' : 
+                       analysis.riskLevel === 'low-medium' ? '💡' : '✅';
       
-      let message = `${riskEmoji} **Fake News Analysis Results**\n\n`;
-      message += `**Risk Level:** ${analysis.riskLevel.toUpperCase()}\n`;
-      message += `**Suspicion Score:** ${analysis.suspicionScore}/20\n`;
-      message += `**Confidence:** ${Math.round(analysis.confidence * 100)}%\n\n`;
+      let message = `${riskEmoji} **FAKE NEWS ANALYSIS REPORT**\n\n`;
+      message += `**📊 RISK ASSESSMENT**\n`;
+      message += `• **Risk Level:** ${analysis.riskLevel.toUpperCase().replace('-', ' ')}\n`;
+      message += `• **Suspicion Score:** ${analysis.suspicionScore}/30\n`;
+      message += `• **Confidence:** ${Math.round(analysis.confidence * 100)}%\n`;
       
-      message += `**💡 Recommendation:**\n${analysis.recommendation}\n\n`;
+      if (analysis.analysisDetails) {
+        message += `• **Text Length:** ${analysis.analysisDetails.wordCount} words, ${analysis.analysisDetails.sentenceCount} sentences\n`;
+        message += `• **Credibility Score:** ${analysis.analysisDetails.credibilityScore}/10\n`;
+      }
       
-      if (analysis.indicators.length > 0) {
-        message += `**⚠️ Issues Detected:**\n`;
+      message += `\n**🎯 RECOMMENDATION:**\n${analysis.recommendation}\n\n`;
+      
+      if (analysis.indicators && analysis.indicators.length > 0) {
+        message += `**🔍 DETECTED ISSUES:**\n`;
         analysis.indicators.forEach(indicator => {
           message += `• ${indicator}\n`;
         });
-      } else {
-        message += `**✅ No major issues detected**\n`;
+        message += `\n`;
       }
+      
+      if (analysis.detectedPatterns && analysis.detectedPatterns.length > 0) {
+        message += `**⚠️ MISINFORMATION PATTERNS:**\n`;
+        const patternDescriptions = {
+          'sensational_language': 'Sensational/exaggerated language',
+          'clickbait': 'Clickbait headlines and phrases',
+          'conspiracy': 'Conspiracy theory terminology',
+          'emotional_manipulation': 'Emotional manipulation tactics',
+          'unreliable_sourcing': 'Vague or unreliable source attribution',
+          'medical_misinfo': 'Medical misinformation patterns',
+          'poor_formatting': 'Unprofessional formatting',
+          'credible_sources': 'Credible source references (positive)'
+        };
+        
+        analysis.detectedPatterns.forEach(pattern => {
+          const description = patternDescriptions[pattern] || pattern;
+          message += `• ${description}\n`;
+        });
+        message += `\n`;
+      }
+      
+      message += `**📚 FACT-CHECKING RESOURCES:**\n`;
+      message += `• Snopes.com - Fact-checking and debunking\n`;
+      message += `• FactCheck.org - Nonpartisan fact-checking\n`;
+      message += `• PolitiFact.com - Political fact-checking\n`;
+      message += `• Reuters Fact Check - News verification\n`;
+      message += `• AP Fact Check - Associated Press verification\n\n`;
+      
+      message += `*Analysis powered by WebSage v3.0 Advanced NLP Engine*`;
       
       return message;
     }
 
     formatBiasForChat(analysis, text) {
-      const biasEmoji = analysis.severity === 'high' ? '🔴' : 
-                       analysis.severity === 'medium' ? '🟡' : '🟢';
+      const biasEmoji = analysis.severity === 'extreme' ? '🚨' :
+                       analysis.severity === 'high' ? '🔴' : 
+                       analysis.severity === 'medium-high' ? '🟠' :
+                       analysis.severity === 'medium' ? '🟡' : 
+                       analysis.severity === 'low-medium' ? '🟢' : '✅';
       
-      let message = `${biasEmoji} **Bias Detection Results**\n\n`;
-      message += `**Bias Severity:** ${analysis.severity.toUpperCase()}\n`;
-      message += `**Bias Score:** ${analysis.biasScore}\n`;
-      message += `**Confidence:** ${Math.round(analysis.confidence * 100)}%\n\n`;
+      let message = `${biasEmoji} **BIAS ANALYSIS REPORT**\n\n`;
+      message += `**📊 BIAS ASSESSMENT**\n`;
+      message += `• **Bias Severity:** ${analysis.severity.toUpperCase().replace('-', ' ')}\n`;
+      message += `• **Bias Score:** ${analysis.biasScore}/25\n`;
+      message += `• **Confidence:** ${Math.round(analysis.confidence * 100)}%\n`;
       
-      if (analysis.biasTypes.length > 0) {
-        message += `**🎯 Detected Bias Types:**\n`;
-        analysis.biasTypes.forEach(type => {
-          message += `• ${type.replace('-', ' ')}\n`;
-        });
-      } else {
-        message += `**✅ No significant bias detected**\nThe text appears to be relatively neutral and balanced.\n`;
+      if (analysis.analysisDetails) {
+        message += `• **Political Lean:** ${analysis.analysisDetails.politicalLean.charAt(0).toUpperCase() + analysis.analysisDetails.politicalLean.slice(1)}\n`;
+        message += `• **Emotional Intensity:** ${analysis.analysisDetails.emotionalIntensity}/10\n`;
+        message += `• **Balance Score:** ${analysis.analysisDetails.balanceScore}/10\n`;
       }
+      
+      message += `\n**🎯 RECOMMENDATION:**\n${analysis.recommendation}\n\n`;
+      
+      if (analysis.biasTypes && analysis.biasTypes.length > 0) {
+        message += `**🔍 DETECTED BIAS TYPES:**\n`;
+        const biasDescriptions = {
+          'left-leaning': 'Left-leaning political perspective',
+          'right-leaning': 'Right-leaning political perspective',
+          'emotional': 'Emotional manipulation and loaded language',
+          'loaded-language': 'Prejudicial and inflammatory terminology',
+          'overgeneralizing': 'Absolute statements and overgeneralization',
+          'stereotyping': 'Group stereotyping and generalizations',
+          'polarizing': 'Divisive and polarizing language',
+          'cherry-picking': 'Selective evidence presentation',
+          'ad-hominem': 'Personal attacks and character assassination'
+        };
+        
+        analysis.biasTypes.forEach(type => {
+          const description = biasDescriptions[type] || type.replace('-', ' ');
+          message += `• ${description}\n`;
+        });
+        message += `\n`;
+      }
+      
+      if (analysis.indicators && analysis.indicators.length > 0) {
+        message += `**⚠️ SPECIFIC INDICATORS:**\n`;
+        analysis.indicators.forEach(indicator => {
+          message += `• ${indicator}\n`;
+        });
+        message += `\n`;
+      }
+      
+      if (analysis.biasTypes.length === 0) {
+        message += `**✅ BALANCED CONTENT**\nThe text appears to be relatively neutral and balanced in its presentation.\n\n`;
+      }
+      
+      message += `**📚 MEDIA LITERACY RESOURCES:**\n`;
+      message += `• AllSides.com - Media bias ratings and balanced news\n`;
+      message += `• MediaBiasFactCheck.com - Source bias and reliability\n`;
+      message += `• Ground News - Multiple perspective news coverage\n`;
+      message += `• Ad Fontes Media Chart - Media bias and reliability mapping\n`;
+      message += `• Pew Research - Nonpartisan fact tank and polling\n\n`;
+      
+      message += `*Analysis powered by WebSage v3.0 Advanced NLP Engine*`;
       
       return message;
     }
@@ -1083,12 +1485,113 @@ if (window.webSageLoaded) {
 
       this.chatWindow = document.createElement('div');
       this.chatWindow.id = 'websage-chat-window';
+      
+      // Ensure we have a valid theme
+      if (!this.settings.theme || (this.settings.theme !== 'light' && this.settings.theme !== 'dark')) {
+        this.settings.theme = 'light'; // Default to light mode
+      }
+      
       this.chatWindow.className = `websage-chat-window ${this.settings.theme}`;
       this.chatWindow.innerHTML = this.getChatWindowHTML();
 
       document.body.appendChild(this.chatWindow);
       this.setupEventListeners();
       this.makeDraggable();
+      this.setupThemeDetection();
+      
+      console.log('🎨 Chat window created with theme:', this.settings.theme);
+    }
+
+    // Setup automatic theme detection and manual toggle
+    setupThemeDetection() {
+      // Listen for system theme changes
+      if (window.matchMedia) {
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        mediaQuery.addListener((e) => {
+          if (this.settings.theme === 'auto') {
+            this.updateTheme(e.matches ? 'dark' : 'light');
+          }
+        });
+      }
+    }
+
+    // Update theme dynamically
+    updateTheme(newTheme) {
+      if (this.chatWindow) {
+        // Determine actual theme to apply
+        let actualTheme = newTheme;
+        if (newTheme === 'auto') {
+          const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          actualTheme = prefersDark ? 'dark' : 'light';
+        }
+        
+        // Update the chat window className to include the theme
+        this.chatWindow.className = `websage-chat-window ${actualTheme}`;
+        
+        // Update settings
+        this.settings.theme = newTheme;
+        this.saveSettings();
+        
+        // Update theme button
+        this.updateThemeButton();
+        
+        console.log('🎨 Theme updated to:', newTheme, '(actual:', actualTheme + ')');
+      }
+    }
+
+    // Toggle between light and dark themes
+    toggleTheme() {
+      const currentTheme = this.settings.theme;
+      let newTheme;
+      
+      if (currentTheme === 'light') {
+        newTheme = 'dark';
+      } else if (currentTheme === 'dark') {
+        newTheme = 'light'; // Simplified: just toggle between light and dark
+      } else {
+        newTheme = 'light';
+      }
+      
+      this.updateTheme(newTheme);
+      
+      // Show theme change notification
+      this.showThemeNotification(newTheme);
+    }
+
+    showThemeNotification(theme) {
+      const status = this.chatWindow.querySelector('#websage-status');
+      const themeEmoji = theme === 'dark' ? '🌙' : theme === 'light' ? '☀️' : '🔄';
+      const themeName = theme === 'auto' ? 'Auto (System)' : theme.charAt(0).toUpperCase() + theme.slice(1);
+      
+      status.textContent = `${themeEmoji} Theme: ${themeName}`;
+      status.className = 'websage-status websage-info';
+      
+      setTimeout(() => {
+        status.textContent = '';
+        status.className = 'websage-status';
+      }, 2000);
+    }
+
+    // Update theme button icon and tooltip
+    updateThemeButton() {
+      const themeBtn = this.chatWindow.querySelector('#websage-theme');
+      if (themeBtn) {
+        let icon, title;
+        
+        if (this.settings.theme === 'dark') {
+          icon = '☀️';
+          title = 'Switch to Light Mode';
+        } else if (this.settings.theme === 'light') {
+          icon = '🌙';
+          title = 'Switch to Dark Mode';
+        } else {
+          icon = '🔄';
+          title = 'Switch to Auto Mode';
+        }
+        
+        themeBtn.textContent = icon;
+        themeBtn.title = title;
+      }
     }
 
     getChatWindowHTML() {
@@ -1105,6 +1608,7 @@ if (window.webSageLoaded) {
               <option value="gemini">Google Gemini</option>
               <option value="mistral">Mistral AI</option>
             </select>
+            <button id="websage-theme" class="websage-btn-icon" title="Toggle Theme">🌙</button>
             <button id="websage-analyze" class="websage-btn-icon" title="Analyze Page">🔍</button>
             <button id="websage-clear" class="websage-btn-icon" title="Clear Chat">🗑️</button>
             <button id="websage-close" class="websage-btn-icon" title="Close">✕</button>
@@ -1127,6 +1631,7 @@ if (window.webSageLoaded) {
     setupEventListeners() {
       const input = this.chatWindow.querySelector('#websage-input');
       const sendBtn = this.chatWindow.querySelector('#websage-send');
+      const themeBtn = this.chatWindow.querySelector('#websage-theme');
       const analyzeBtn = this.chatWindow.querySelector('#websage-analyze');
       const clearBtn = this.chatWindow.querySelector('#websage-clear');
       const closeBtn = this.chatWindow.querySelector('#websage-close');
@@ -1135,8 +1640,14 @@ if (window.webSageLoaded) {
       // Set current provider
       providerSelect.value = this.settings.provider;
 
+      // Update theme button icon based on current theme
+      this.updateThemeButton();
+
       // Send message
       sendBtn.addEventListener('click', () => this.sendMessage());
+
+      // Toggle theme
+      themeBtn.addEventListener('click', () => this.toggleTheme());
 
       // Analyze page
       analyzeBtn.addEventListener('click', () => this.analyzeCurrentPage());
