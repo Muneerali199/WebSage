@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "WebSage - AI Browser Assistant",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "description": "Advanced AI-powered assistant with NLP, sentiment analysis, conversation intelligence, and multi-modal capabilities for enhanced web browsing.",
   "permissions": [
     "storage",

@@ -1,9 +1,9 @@
 <div align="center">
 
-# 🎨 WebSage v4.0
+# 🎨 WebSage v5.0
 ### Advanced AI Browser Assistant with Perfect Theme System & Professional Fake News Detection
 
-[![Version](https://img.shields.io/badge/version-4.0.0-blue.svg)](https://github.com/Xenonesis/WebSage)
+[![Version](https://img.shields.io/badge/version-5.0.0-blue.svg)](https://github.com/Xenonesis/WebSage)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Chrome Extension](https://img.shields.io/badge/chrome-extension-orange.svg)](https://chrome.google.com/webstore)
 [![AI Powered](https://img.shields.io/badge/AI-powered-purple.svg)](https://github.com/Xenonesis/WebSage)
@@ -12,13 +12,13 @@
 
 *Revolutionary browser extension with **professional-grade fake news detection** and **perfect light/dark mode theming**. Protect yourself from misinformation while enjoying a beautiful, accessible interface that adapts to your preferences.*
 
-[🚀 Quick Start](#-installation) • [🎨 Theme System](#-perfect-theme-system) • [🛡️ Fake News Detection](#-fake-news-detection) • [📖 Full Documentation](README_v4.md) • [🤝 Contributing](CONTRIBUTING.md)
+[🚀 Quick Start](#-installation) • [🎨 Theme System](#-perfect-theme-system) • [🛡️ Fake News Detection](#-fake-news-detection) • [🤝 Contributing](CONTRIBUTING.md)
 
 </div>
 
 ---
 
-## 🌟 **What's New in v4.0**
+## 🌟 **What's New in v5.0**
 
 ### 🎨 **Perfect Theme System**
 - **🌞 Flawless Light Mode** - Clean white interface with proper contrast
@@ -38,8 +38,7 @@
 
 ## 📖 **Complete Documentation**
 
-For full documentation, features, and usage instructions, see:
-**[📚 WebSage v4.0 Complete Documentation](README_v4.md)**
+This README contains all the information you need to get started with WebSage v5.0.
 
 ---
 
@@ -58,7 +57,7 @@ WebSage is a revolutionary Chrome browser extension that brings the power of adv
 - **⚡ Lightning Fast**: Optimized performance with intelligent caching and parallel processing
 - **🌐 Universal**: Works on any HTTPS website with seamless integration
 
-## 🚀 What's New in v4.0
+## 🚀 What's New in v5.0
 
 <table>
 <tr>

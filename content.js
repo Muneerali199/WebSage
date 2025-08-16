@@ -1,4 +1,4 @@
-// WebSage Content Script - Enhanced with Advanced NLP and Conversation Intelligence
+// WebSage Content Script - Enhanced with Advanced UI/UX Features
 
 // Prevent multiple script executions
 if (window.webSageLoaded) {
@@ -827,7 +827,7 @@ if (window.webSageLoaded) {
     }
   }
 
-  // WebSage Chat Class
+  // WebSage Chat Class - Enhanced with Advanced UI/UX Features
   class WebSageChat {
     constructor() {
       this.isVisible = false;
@@ -857,6 +857,10 @@ if (window.webSageLoaded) {
           userSatisfaction: 'unknown'
         }
       };
+      this.floatingActionButton = null;
+      this.shortcutsEnabled = true;
+      this.messageQueue = [];
+      this.isProcessing = false;
 
       this.init();
     }
@@ -876,6 +880,9 @@ if (window.webSageLoaded) {
       this.createChatWindow();
       this.setupGlobalToggle();
       this.initializeNLPProcessor();
+      this.createFloatingActionButton();
+      this.setupKeyboardShortcuts();
+      this.setupNotificationSystem();
     }
 
     // Initialize NLP processor - should be available immediately since it's loaded as content script
@@ -933,7 +940,14 @@ if (window.webSageLoaded) {
         sentimentAnalysis: true,
         intentClassification: true,
         conversationInsights: true,
-        apiKeys: {}
+        apiKeys: {},
+        // New UI/UX settings
+        animationsEnabled: true,
+        notificationsEnabled: true,
+        autoResize: true,
+        messageEffects: true,
+        voiceInput: false,
+        darkMode: prefersDark
       };
     }
 
@@ -1186,6 +1200,109 @@ if (window.webSageLoaded) {
       message += `*Analysis powered by WebSage v3.0 Advanced NLP Engine*`;
       
       return message;
+    }
+
+    // Create floating action button for quick access
+    createFloatingActionButton() {
+      if (this.floatingActionButton) return;
+
+      this.floatingActionButton = document.createElement('button');
+      this.floatingActionButton.className = 'websage-fab';
+      this.floatingActionButton.innerHTML = '🧠';
+      this.floatingActionButton.title = 'Open WebSage Chat';
+      this.floatingActionButton.setAttribute('data-tooltip', 'Open WebSage Chat');
+
+      document.body.appendChild(this.floatingActionButton);
+
+      // Add click event
+      this.floatingActionButton.addEventListener('click', () => {
+        this.toggle();
+      });
+
+      // Add pulse animation for notifications
+      if (this.settings.notificationsEnabled) {
+        this.floatingActionButton.classList.add('websage-pulse');
+      }
+    }
+
+    // Setup keyboard shortcuts
+    setupKeyboardShortcuts() {
+      // Alt+W to toggle WebSage
+      document.addEventListener('keydown', (e) => {
+        if (e.altKey && e.key === 'w' && this.shortcutsEnabled) {
+          e.preventDefault();
+          this.toggle();
+        }
+      });
+
+      // Escape to close
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && this.isVisible) {
+          this.hide();
+        }
+      });
+    }
+
+    // Setup notification system
+    setupNotificationSystem() {
+      // Create notification container
+      const notificationContainer = document.createElement('div');
+      notificationContainer.id = 'websage-notifications';
+      notificationContainer.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 2147483648;
+        pointer-events: none;
+      `;
+      document.body.appendChild(notificationContainer);
+
+      // Store reference for notifications
+      this.notificationContainer = notificationContainer;
+    }
+
+    // Show notification
+    showNotification(message, type = 'info', duration = 3000) {
+      if (!this.notificationContainer || !this.settings.notificationsEnabled) return;
+
+      const notification = document.createElement('div');
+      notification.className = `websage-notification websage-notification-${type}`;
+      notification.style.cssText = `
+        background: ${type === 'error' ? '#e53e3e' : type === 'success' ? '#38a169' : '#3182ce'};
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        font-size: 14px;
+        font-weight: 500;
+        opacity: 0;
+        transform: translateY(-20px);
+        transition: all 0.3s ease;
+        pointer-events: auto;
+        max-width: 320px;
+        word-wrap: break-word;
+      `;
+
+      notification.textContent = message;
+      this.notificationContainer.appendChild(notification);
+
+      // Animate in
+      setTimeout(() => {
+        notification.style.opacity = '1';
+        notification.style.transform = 'translateY(0)';
+      }, 10);
+
+      // Remove after duration
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateY(-20px)';
+        setTimeout(() => {
+          if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+          }
+        }, 300);
+      }, duration);
     }
 
     // Perform text analysis for fake news and bias detection
@@ -1678,6 +1795,8 @@ if (window.webSageLoaded) {
     }
 
     autoResizeInput(input) {
+      if (!this.settings.autoResize) return;
+      
       input.style.height = 'auto';
       input.style.height = Math.min(input.scrollHeight, 120) + 'px';
     }
@@ -1732,11 +1851,21 @@ if (window.webSageLoaded) {
         const input = this.chatWindow.querySelector('#websage-input');
         input.focus();
       }, 100);
+
+      // Show notification
+      if (this.settings.notificationsEnabled) {
+        this.showNotification('WebSage chat opened', 'info', 2000);
+      }
     }
 
     hide() {
       this.chatWindow.style.display = 'none';
       this.isVisible = false;
+
+      // Hide FAB tooltip if visible
+      if (this.floatingActionButton) {
+        this.floatingActionButton.classList.remove('websage-pulse');
+      }
     }
 
     async sendMessage() {
@@ -1927,9 +2056,13 @@ if (window.webSageLoaded) {
       const messageDiv = document.createElement('div');
       messageDiv.className = `websage-message websage-message-${role}`;
 
+      // Add timestamp
+      const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      
       messageDiv.innerHTML = `
         <div class="websage-message-content">${this.formatMessage(content)}</div>
         ${role === 'assistant' ? '<button class="websage-copy-btn" title="Copy">📋</button>' : ''}
+        <div class="websage-message-time">${timestamp}</div>
       `;
 
       messagesContainer.appendChild(messageDiv);
@@ -1946,7 +2079,7 @@ if (window.webSageLoaded) {
       }
 
       if (saveToHistory) {
-        this.chatHistory.push({ role, content });
+        this.chatHistory.push({ role, content, timestamp });
         // Auto-save conversation memory after each message
         this.saveConversationMemory();
       }
@@ -2005,6 +2138,11 @@ if (window.webSageLoaded) {
       const analysisPanel = this.chatWindow.querySelector('#websage-analysis');
       if (analysisPanel) {
         analysisPanel.style.display = 'none';
+      }
+
+      // Show notification
+      if (this.settings.notificationsEnabled) {
+        this.showNotification('Chat cleared', 'info', 2000);
       }
     }
 
@@ -2142,25 +2280,25 @@ if (window.webSageLoaded) {
 
     getRiskColor(riskLevel) {
       switch (riskLevel) {
-        case 'high': return '#e74c3c';
-        case 'medium': return '#f39c12';
-        case 'low-medium': return '#f1c40f';
-        default: return '#27ae60';
+        case 'high': return '#e53e3e';
+        case 'medium': return '#dd6b20';
+        case 'low-medium': return '#d69e2e';
+        default: return '#38a169';
       }
     }
 
     getSeverityColor(severity) {
       switch (severity) {
-        case 'high': return '#e74c3c';
-        case 'medium': return '#f39c12';
-        default: return '#27ae60';
+        case 'high': return '#e53e3e';
+        case 'medium': return '#dd6b20';
+        default: return '#38a169';
       }
     }
 
     getQualityColor(score) {
-      if (score >= 80) return '#27ae60';
-      if (score >= 60) return '#f39c12';
-      return '#e74c3c';
+      if (score >= 80) return '#38a169';
+      if (score >= 60) return '#3182ce';
+      return '#e53e3e';
     }
 
     async saveSettings() {

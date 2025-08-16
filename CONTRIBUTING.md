@@ -1,4 +1,4 @@
-# Contributing to WebSage v3.0
+# Contributing to WebSage v5.0
 
 Thank you for your interest in contributing to WebSage! We welcome contributions from developers, researchers, and users who want to help improve fake news detection and make the web safer for everyone.
 
